@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderSignOut from "../layouts/HeaderSignOut";
 import Footer from "../layouts/Footer";
 import ButtonRed from "../components/buttons/ButtonRed";
+
 const PlanformPage = () => {
     const data = [
         {
@@ -53,6 +54,10 @@ const PlanformPage = () => {
             isMostPopular: false,
         },
     ];
+    const [selectIndex, sẹtSelectIndex] = useState();
+    const handleClickItem = (index) => {
+        sẹtSelectIndex(index);
+    };
     return (
         <div>
             <HeaderSignOut></HeaderSignOut>
@@ -65,10 +70,21 @@ const PlanformPage = () => {
                         return (
                             <div
                                 key={index}
-                                className="w-[24%] border-gray-600 rounded-lg border min-h-24"
+                                className={`w-[24%] border-gray-600 rounded-lg border min-h-24  ${
+                                    index === selectIndex
+                                        ? "shadow-md shadow-pink-600"
+                                        : ""
+                                }`}
+                                onClick={() => handleClickItem(index)}
                             >
                                 {item.isMostPopular ? (
-                                    <div className="h-6 text-center text-white rounded-t-lg bg-slate-700">
+                                    <div
+                                        className={`h-6 text-center text-white rounded-t-lg transition-all ${
+                                            index === selectIndex
+                                                ? "bg-pink-600"
+                                                : "bg-slate-700"
+                                        }`}
+                                    >
                                         Most popular
                                     </div>
                                 ) : (
@@ -81,10 +97,24 @@ const PlanformPage = () => {
                                             backgroundImage:
                                                 "linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)",
                                         }}
-                                        className="flex flex-col gap-0 p-4 text-xl font-semibold text-white rounded-lg"
+                                        className="relative flex flex-col gap-0 p-4 text-xl font-semibold text-white rounded-lg"
                                     >
                                         <p>{item.name}</p>
                                         <p>{item.des}</p>
+                                        {index === selectIndex && (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor"
+                                                className="absolute w-6 h-6 bottom-3 right-3"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        )}
                                     </div>
                                     <div className="border-b-[2px] mt-6 pb-3">
                                         <p className="text-sm font-semibold text-gray-600">
