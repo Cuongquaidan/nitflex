@@ -8,6 +8,8 @@ const InputPlaceholdrEffec = ({
     regex,
     errorNoti,
     classNameSub = "",
+    value = "",
+    onChange = () => {},
     ...props
 }) => {
     const inputRef = useRef(null);
@@ -33,6 +35,7 @@ const InputPlaceholdrEffec = ({
                 label.style.left = paddingNum ? `${paddingNum}px` : "0px";
             }
         };
+
         const checkRegex = () => {
             const inputValue = input.value.trim();
             if (inputValue && regex.test(inputValue)) {
@@ -66,19 +69,17 @@ const InputPlaceholdrEffec = ({
                 padding: `${paddingNum}px`,
                 fontSize: `${textSizeNum}px`,
                 height: `${paddingNum * 2 + textSizeNum + 10}px`,
-                // background:
-                //     "linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
             }}
         >
             <input
                 ref={inputRef}
+                value={value}
+                onChange={onChange}
                 style={{
                     width,
                     padding: `${paddingNum}px`,
                     fontSize: `${textSizeNum}px`,
                     height: `${paddingNum * 2 + textSizeNum + 10}px`,
-                    // background:
-                    //     "linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
                 }}
                 {...props}
                 id={placeHolder}
