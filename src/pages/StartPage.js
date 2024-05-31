@@ -2,6 +2,7 @@ import { React } from "react";
 import backgroundStartedpage from "../images/backgroundStartedpage.jpg";
 import { ButtonRed } from "../components/buttons";
 import { InputPlaceholdrEffec } from "../components/inputs";
+import Header from "../layouts/Header";
 const StartPage = () => {
     const regexEmail =
         // eslint-disable-next-line no-control-regex
@@ -21,22 +22,7 @@ const StartPage = () => {
                 }}
             >
                 <div className="w-[1280px] mx-auto ">
-                    <header className="flex items-center justify-between">
-                        <div>
-                            <p className="text-[60px] font-bold text-red-600">
-                                NITFLEX
-                            </p>
-                        </div>
-                        <ButtonRed
-                            padding={"4px"}
-                            width={"100px"}
-                            height={"30px"}
-                            textSize={"20px"}
-                            onClick={() => {}}
-                        >
-                            Sign In
-                        </ButtonRed>
-                    </header>
+                    <Header></Header>
                     <div className="mt-[200px] text-center">
                         <p className="text-[60px] font-bold">
                             Unlimited movies, TV shows, and more

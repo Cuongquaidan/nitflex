@@ -2,7 +2,7 @@ import React from "react";
 
 const ButtonRed = ({
     width,
-
+    classNameSub,
     textSize,
     onClick,
     padding,
@@ -11,7 +11,10 @@ const ButtonRed = ({
 }) => {
     return (
         <button
-            className="flex justify-center font-semibold text-white bg-red-600 rounded-lg"
+            className={
+                "flex justify-center font-semibold text-white bg-red-600 rounded-lg " +
+                `${classNameSub}`
+            }
             style={{
                 width,
                 fontSize: textSize,

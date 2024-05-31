@@ -7,6 +7,7 @@ const InputPlaceholdrEffec = ({
     textSizeNum,
     regex,
     errorNoti,
+    classNameSub = "",
     ...props
 }) => {
     const inputRef = useRef(null);
@@ -17,10 +18,11 @@ const InputPlaceholdrEffec = ({
         const input = inputRef.current;
         const label = labelRef.current;
         const p = errorRef.current;
+
         const handleInputClick = () => {
-            label.style.transform = "scale(0.5)";
+            label.style.transform = "scale(0.6)";
             label.style.top = "1px";
-            label.style.left = "-12px";
+            label.style.left = "0px";
         };
 
         const handleInputBlur = () => {
@@ -58,14 +60,14 @@ const InputPlaceholdrEffec = ({
 
     return (
         <div
-            className="relative"
+            className="relative rounded-xl"
             style={{
                 width,
                 padding: `${paddingNum}px`,
                 fontSize: `${textSizeNum}px`,
                 height: `${paddingNum * 2 + textSizeNum + 10}px`,
-                background:
-                    "linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
+                // background:
+                //     "linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
             }}
         >
             <input
@@ -75,18 +77,21 @@ const InputPlaceholdrEffec = ({
                     padding: `${paddingNum}px`,
                     fontSize: `${textSizeNum}px`,
                     height: `${paddingNum * 2 + textSizeNum + 10}px`,
-                    background:
-                        "linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
+                    // background:
+                    //     "linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
                 }}
                 {...props}
                 id={placeHolder}
                 name={placeHolder}
-                className="absolute top-0 left-0 border-[0.5px] pb-[0!important] h-[] rounded  outline-white outline-1"
+                className={
+                    "absolute top-0 left-0 border-[0.5px] pb-[0!important] h-[] rounded-xl  outline-white outline-1 " +
+                    ` ${classNameSub}`
+                }
             />
             <label
                 ref={labelRef}
                 htmlFor={placeHolder}
-                className="absolute text-base text-gray-400"
+                className="absolute text-base text-left text-gray-400"
                 style={{
                     top: paddingNum ? `${paddingNum}px` : 0,
                     left: paddingNum ? `${paddingNum}px` : 0,
@@ -100,7 +105,7 @@ const InputPlaceholdrEffec = ({
                 {placeHolder}
             </label>
             <p
-                className="absolute bottom-[-40px] left-[10px] text-xl text-red-600"
+                className="absolute bottom-[-30px] left-[5px] text-base text-red-600 pl-2"
                 ref={errorRef}
             ></p>
         </div>

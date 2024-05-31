@@ -2,6 +2,11 @@
     font-family: "helvetica-neue";
     src: url(./fonts/helveticaNeue/HelveticaNeue-Condensed.otf);
 }
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
 body {
     margin: 0;
     font-family: "helvetica-neue", -apple-system, BlinkMacSystemFont, "Segoe UI",

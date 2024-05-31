@@ -1,12 +1,7 @@
 import "./App.css";
-import { Fragment } from "react";
-import StartPage from "./pages/StartPage.js";
+import PlanformPage from "./pages/PlanformPage";
 function App() {
-    return (
-        <Fragment>
-            <StartPage></StartPage>
-        </Fragment>
-    );
+    return <PlanformPage></PlanformPage>;
 }
 
 export default App;
