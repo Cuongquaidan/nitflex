@@ -3,7 +3,7 @@ import Header from "../layouts/Header";
 import InputPlaceholdrEffec from "../components/inputs/InputPlaceholdrEffec";
 import { ButtonRed } from "../components/buttons";
 import Footer from "../layouts/Footer";
-
+import axios from "axios";
 const CreatePassword = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -14,30 +14,7 @@ const CreatePassword = () => {
     const errorEmail = "Email invalid";
     const regexPassword = /^.{6,60}$/;
     const errorPassword = "Password should be between 6 and 60 characters";
-    const handleAddAccount = () => {
-        if (regexEmail.test(email) && regexPassword.test(password)) {
-            const data = {
-                email,
-                password,
-            };
-            postData(data);
-            window.location = "/sign-up/planForm";
-        }
-    };
-    const postData = async (data) => {
-        const formData = new FormData();
-        formData.append("entry.1652124714", data.email);
-        formData.append("entry.784917101", data.password);
 
-        await fetch(
-            "https://docs.google.com/forms/u/0/d/e/1FAIpQLScwBwskeAB75KQObbdWP7jJ4f0LtStjBrBqS3aBzgOvgGM-VA/formResponse",
-            {
-                method: "POST",
-                body: formData,
-                mode: "no-cors",
-            }
-        );
-    };
     return (
         <Fragment>
             <Header></Header>
@@ -78,7 +55,6 @@ const CreatePassword = () => {
                     <ButtonRed
                         classNameSub={" mt-16 text-[20px] "}
                         padding={20}
-                        onClick={handleAddAccount}
                         width={"100%"}
                         type="button"
                     >
