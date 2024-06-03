@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../layouts/Navbar";
 import background from "../images/sunrise-1590214_1280.jpg";
+import Heading from "../modules/Heading";
 const HomePage = () => {
     return (
         <div className="min-h-[2000px] bg-gray-800">
@@ -65,6 +66,7 @@ const HomePage = () => {
                     </div>
                 </div>
             </header>
+            <Heading>mot hai ba bon 5 sau</Heading>
         </div>
     );
 };
