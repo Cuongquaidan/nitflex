@@ -2,9 +2,12 @@ import React from "react";
 import Navbar from "../layouts/Navbar";
 import background from "../images/sunrise-1590214_1280.jpg";
 import Heading from "../modules/Heading";
+import MovieItem from "../modules/MovieItem";
+import MovieList from "../modules/MovieList";
+import FooterInPageMovies from "../layouts/FooterInPageMovies";
 const HomePage = () => {
     return (
-        <div className="min-h-[2000px] bg-gray-800">
+        <div className="min-h-[2000px] bg-gray-800 ">
             <Navbar></Navbar>
             <header
                 className="w-full min-h-screen "
@@ -66,7 +69,7 @@ const HomePage = () => {
                     </div>
                 </div>
             </header>
-            <Heading>mot hai ba bon 5 sau</Heading>
+            <FooterInPageMovies></FooterInPageMovies>
         </div>
     );
 };
