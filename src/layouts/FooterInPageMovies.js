@@ -2,7 +2,7 @@ import React from "react";
 
 const FooterInPageMovies = () => {
     return (
-        <div className="items-center justify-center p-10 text-white bg-black">
+        <div className="items-center justify-center p-10 text-white bg-black mt-44">
             <div className="max-w-[1000px] mx-auto">
                 <div className="flex gap-5 p-4 text-2xl">
                     <svg
