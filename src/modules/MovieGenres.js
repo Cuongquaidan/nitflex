@@ -1,7 +1,6 @@
 import MovieItem from "./MovieItem";
 import Heading from "./Heading";
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import ReactPaginate from "react-paginate";
 const MovieGenres = ({
     heading,
@@ -13,7 +12,7 @@ const MovieGenres = ({
     ...props
 }) => {
     const handleButton = () => {
-        if (limit == 20) {
+        if (limit === 20) {
             setLimit(40);
         } else {
             setLimit(20);
@@ -27,26 +26,24 @@ const MovieGenres = ({
     // (This could be items from props; or items loaded in a local state
     // from an API endpoint with useEffect and useState)
     const endOffset = itemOffset + data?.params?.pagination?.totalItemsPerPage;
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-    const currentItems = data?.items.slice(itemOffset, endOffset);
+    const currentItems = data?.items?.slice(itemOffset, endOffset);
     const pageCount = Math.ceil(data?.params?.pagination?.totalPages);
 
     // Invoke when user click to request another page.
     const handlePageClick = (event) => {
         const newOffset =
             (event.selected * data?.params?.pagination?.totalItemsPerPage) %
-            data?.items.length;
+            data?.items?.length;
         setItemOffset(newOffset);
         setPage(event.selected + 1);
         setLimit(20);
-        console.log(event.selected);
     };
 
     return (
         <div className="w-full p-10 mx-auto overflow-x-hidden">
             <Heading>{heading}</Heading>
             <div className=" grid gap-10 mt-5 z-[1] grid-cols-5 mx-auto">
-                {currentItems.map((item) => (
+                {currentItems?.map((item) => (
                     <MovieItem key={item._id} item={item}></MovieItem>
                 ))}
             </div>

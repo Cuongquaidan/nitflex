@@ -8,9 +8,9 @@ export default function useAxios(url, keyword) {
             try {
                 const response = await axios.get(url);
                 if (keyword) {
-                    setData(response.data.data.items);
+                    setData(response?.data?.data?.items);
                 } else {
-                    setData(response.data.items);
+                    setData(response?.data?.items);
                 }
             } catch (error) {
                 console.log(error);

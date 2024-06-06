@@ -6,6 +6,11 @@ import PlanformPage from "./pages/PlanformPage";
 import LayoutPage from "./layouts/LayoutPage";
 import HomePage from "./pages/HomePage";
 import PhimLePage from "./pages/PhimLePage";
+import PhimBoPage from "./pages/PhimBoPage";
+import TVShowsPage from "./pages/TVShowsPage";
+import HoatHinhPage from "./pages/HoatHinhPage";
+import HomeDirecPage from "./pages/HomeDirecPage";
+import PhimMoiPage from "./pages/PhimMoiPage";
 function App() {
     return (
         <BrowserRouter>
@@ -27,6 +32,26 @@ function App() {
                     <Route
                         path="/genres/phim-le"
                         element={<PhimLePage></PhimLePage>}
+                    ></Route>
+                    <Route
+                        path="/genres/phim-bo"
+                        element={<PhimBoPage></PhimBoPage>}
+                    ></Route>
+                    <Route
+                        path="/genres/tv-shows"
+                        element={<TVShowsPage></TVShowsPage>}
+                    ></Route>
+                    <Route
+                        path="/genres/hoat-hinh"
+                        element={<HoatHinhPage></HoatHinhPage>}
+                    ></Route>
+                    <Route
+                        path="/genres/phim-moi"
+                        element={<PhimMoiPage></PhimMoiPage>}
+                    ></Route>
+                    <Route
+                        path="/genres/:slug"
+                        element={<HomeDirecPage></HomeDirecPage>}
                     ></Route>
                 </Route>
             </Routes>

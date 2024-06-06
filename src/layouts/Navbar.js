@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const data = [
     {
@@ -25,6 +25,10 @@ const data = [
 ];
 
 const Navbar = ({ ...props }) => {
+    const location = useLocation();
+    const key = location.pathname.substring(
+        location.pathname.indexOf("/genres") + "/genres".length + 1
+    );
     const [indexActive, setIndexActive] = useState(0);
     const [showAction, setShowAction] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -44,7 +48,13 @@ const Navbar = ({ ...props }) => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-
+    useEffect(() => {
+        data.forEach((item, index) => {
+            if (item.slug === key) {
+                setIndexActive(index);
+            }
+        });
+    }, [location.pathname, key]);
     const navStyle = {
         transition: "background-color 0.3s ease",
         backgroundColor: isScrolled ? "black" : "transparent",
@@ -73,7 +83,13 @@ const Navbar = ({ ...props }) => {
                             key={index}
                             onClick={() => setIndexActive(index)}
                         >
-                            <NavLink to={"genres/" + item.slug}>
+                            <NavLink
+                                to={
+                                    item.slug !== ""
+                                        ? "genres/" + item.slug
+                                        : "/home"
+                                }
+                            >
                                 {" "}
                                 {item.name}
                             </NavLink>

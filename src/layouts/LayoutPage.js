@@ -1,22 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import background from "../images/sunrise-1590214_1280.jpg";
 import Heading from "../modules/Heading";
 import MovieItem from "../modules/MovieItem";
 import MovieList from "../modules/MovieList";
 import FooterInPageMovies from "./FooterInPageMovies";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import useAxios from "../hooks/useAxios";
 const LayoutPage = () => {
-    const phimMoi = useAxios(
-        "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1"
-    );
-    const randomIndex =
-        phimMoi && phimMoi.length > 0
-            ? Math.floor(Math.random() * phimMoi.length)
-            : 0;
-    const phim = phimMoi && phimMoi.length > 0 ? phimMoi[randomIndex] : null;
+    let location = useLocation();
 
+    // const phimMoi = useAxios(
+    //     "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1"
+    // );
+    // const randomIndex =
+    //     phimMoi && phimMoi.length > 0
+    //         ? Math.floor(Math.random() * phimMoi.length)
+    //         : 0;
+    // const phim = phimMoi && phimMoi.length > 0 ? phimMoi[randomIndex] : null;
+    const [phim, setPhim] = useState(null);
+    const key = location.pathname.substring(
+        location.pathname.indexOf("/genres") + "/genres".length + 1
+    );
+    const phimMoi = useAxios(
+        `https://phimapi.com/v1/api/danh-sach/tv-shows`,
+        true
+    );
+    const phimGenres =
+        useAxios(
+            `https://phimapi.com/v1/api/danh-sach/${
+                ["phim-le", "phim-bo", "tv-shows", "hoat-hinh"].includes(key)
+                    ? key
+                    : "phim-le"
+            }`,
+            true
+        ) || null;
+
+    useEffect(() => {
+        if (location.pathname.includes("/genres")) {
+            const randomIndex =
+                phimGenres && phimGenres.length > 0
+                    ? Math.floor(Math.random() * phimGenres.length)
+                    : 0;
+            const phimRD =
+                phimGenres && phimGenres.length > 0
+                    ? phimGenres[randomIndex]
+                    : null;
+            setPhim(phimRD);
+        } else {
+            const randomIndex =
+                phimMoi && phimMoi.length > 0
+                    ? Math.floor(Math.random() * phimMoi.length)
+                    : 0;
+            const phimRD =
+                phimMoi && phimMoi.length > 0 ? phimMoi[randomIndex] : null;
+            setPhim(phimRD);
+        }
+    }, [phimGenres, phimMoi, location.pathname, key]);
     return (
         <div className="bg-gray-900">
             <Navbar></Navbar>

@@ -18,17 +18,14 @@ const HomePage = () => {
         "https://phimapi.com/v1/api/tim-kiem?keyword=Korea",
         true
     );
-    console.log(phimMoi);
     return (
         <div>
             {phimMoi && (
                 <MovieList heading={"Phim mới"} data={phimMoi}></MovieList>
             )}
             {anime && <MovieList heading={"Anime"} data={anime}></MovieList>}
-            {USA && <MovieList heading={"Phim Mỹ"} data={USA}></MovieList>}
-            {Korea && (
-                <MovieList heading={"Phim Hàn Xẻng"} data={Korea}></MovieList>
-            )}
+            {USA && <MovieList heading={"USA"} data={USA}></MovieList>}
+            {Korea && <MovieList heading={"Korea"} data={Korea}></MovieList>}
         </div>
     );
 };
