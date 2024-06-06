@@ -6,20 +6,40 @@ import MovieItem from "../modules/MovieItem";
 import MovieList from "../modules/MovieList";
 import FooterInPageMovies from "./FooterInPageMovies";
 import { Outlet } from "react-router";
+import useAxios from "../hooks/useAxios";
 const LayoutPage = () => {
+    const phimMoi = useAxios(
+        "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1"
+    );
+    const randomIndex =
+        phimMoi && phimMoi.length > 0
+            ? Math.floor(Math.random() * phimMoi.length)
+            : 0;
+    const phim = phimMoi && phimMoi.length > 0 ? phimMoi[randomIndex] : null;
+
     return (
         <div className="bg-gray-900">
             <Navbar></Navbar>
             <header
                 className="w-full min-h-screen "
-                style={{ backgroundImage: `url(${background})` }}
+                style={{
+                    backgroundImage: `url(${
+                        phim
+                            ? phim.thumb_url.includes(
+                                  "https://img.phimapi.com/"
+                              )
+                                ? phim.thumb_url
+                                : `https://img.phimapi.com/${phim.thumb_url}`
+                            : background
+                    })`,
+                }}
             >
                 <div className="relative z-10 w-full min-h-screen">
                     <div
                         className="absolute top-[30%] left-[100px] z-[1] text-white text-[60px] font-bold max-w-[40%]"
                         style={{ textShadow: "0 0 5px black" }}
                     >
-                        <h2>Something good yeah!!</h2>
+                        <h2>{phim ? phim.name : "Không có"}</h2>
                         <p className="text-xl">
                             Lorem ipsum dolor sit, amet consectetur adipisicing
                             elit. Ab itaque eos, doloribus inventore vero

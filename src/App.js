@@ -5,6 +5,7 @@ import CreatePassword from "./pages/CreatePassword";
 import PlanformPage from "./pages/PlanformPage";
 import LayoutPage from "./layouts/LayoutPage";
 import HomePage from "./pages/HomePage";
+import PhimLePage from "./pages/PhimLePage";
 function App() {
     return (
         <BrowserRouter>
@@ -23,6 +24,10 @@ function App() {
                 ></Route>
                 <Route path="/" element={<LayoutPage></LayoutPage>}>
                     <Route path="/home" element={<HomePage></HomePage>}></Route>
+                    <Route
+                        path="/genres/phim-le"
+                        element={<PhimLePage></PhimLePage>}
+                    ></Route>
                 </Route>
             </Routes>
         </BrowserRouter>

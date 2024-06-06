@@ -56,7 +56,10 @@ const Navbar = ({ ...props }) => {
             className="fixed flex items-center justify-between z-[99] w-full px-16 py-4 text-xl"
         >
             <div className="flex gap-4 nav-left">
-                <NavLink to="/" className="text-[40px] font-bold text-red-600">
+                <NavLink
+                    to="/home"
+                    className="text-[40px] font-bold text-red-600"
+                >
                     NITFLEX
                 </NavLink>
                 <ul className="flex gap-3 text-gray-300">
@@ -70,7 +73,10 @@ const Navbar = ({ ...props }) => {
                             key={index}
                             onClick={() => setIndexActive(index)}
                         >
-                            {item.name}
+                            <NavLink to={"genres/" + item.slug}>
+                                {" "}
+                                {item.name}
+                            </NavLink>
                         </li>
                     ))}
                 </ul>

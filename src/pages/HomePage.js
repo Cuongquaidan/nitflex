@@ -1,43 +1,24 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import MovieList from "../modules/MovieList";
-import MovieItem from "../modules/MovieItem";
+import useAxios from "../hooks/useAxios";
 
 const HomePage = () => {
-    const [phimMoi, setPhimMoi] = useState(null);
-    const [anime, setAnime] = useState(null);
-    const [USA, setUSA] = useState(null);
-    const [Korea, setKorea] = useState(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(
-                    "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1"
-                );
-                setPhimMoi(response.data.items);
-                const responseAnime = await axios.get(
-                    "https://phimapi.com/v1/api/tim-kiem?keyword=Anime"
-                );
-                setAnime(responseAnime.data.data.items);
-                const responseUSA = await axios.get(
-                    "https://phimapi.com/v1/api/tim-kiem?keyword=USA"
-                );
-                setUSA(responseUSA.data.data.items);
-                const responseKorea = await axios.get(
-                    "https://phimapi.com/v1/api/tim-kiem?keyword=Korea"
-                );
-                setKorea(responseKorea.data.data.items);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    console.log(Korea);
-
+    const phimMoi = useAxios(
+        "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1"
+    );
+    const anime = useAxios(
+        "https://phimapi.com/v1/api/tim-kiem?keyword=Anime",
+        true
+    );
+    const USA = useAxios(
+        "https://phimapi.com/v1/api/tim-kiem?keyword=USA",
+        true
+    );
+    const Korea = useAxios(
+        "https://phimapi.com/v1/api/tim-kiem?keyword=Korea",
+        true
+    );
+    console.log(phimMoi);
     return (
         <div>
             {phimMoi && (
