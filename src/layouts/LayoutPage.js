@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import background from "../images/sunrise-1590214_1280.jpg";
-import Heading from "../modules/Heading";
-import MovieItem from "../modules/MovieItem";
-import MovieList from "../modules/MovieList";
 import FooterInPageMovies from "./FooterInPageMovies";
 import { Outlet, useLocation } from "react-router";
 import useAxios from "../hooks/useAxios";
+import axios from "axios";
+import ReactPlayer from "react-player";
+
 const LayoutPage = () => {
     let location = useLocation();
 
-    // const phimMoi = useAxios(
-    //     "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1"
-    // );
-    // const randomIndex =
-    //     phimMoi && phimMoi.length > 0
-    //         ? Math.floor(Math.random() * phimMoi.length)
-    //         : 0;
-    // const phim = phimMoi && phimMoi.length > 0 ? phimMoi[randomIndex] : null;
     const [phim, setPhim] = useState(null);
     const key = location.pathname.substring(
         location.pathname.indexOf("/genres") + "/genres".length + 1
@@ -57,11 +49,29 @@ const LayoutPage = () => {
             setPhim(phimRD);
         }
     }, [phimGenres, phimMoi, location.pathname, key]);
+
+    const [data, setData] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(
+                    `https://phimapi.com/phim/${phim?.slug}`
+                );
+                setData(response.data.movie);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        if (phim) {
+            fetchData();
+        }
+    }, [phim]);
+
     return (
         <div className="bg-gray-900">
-            <Navbar></Navbar>
+            <Navbar />
             <header
-                className="w-full min-h-screen "
+                className="relative w-full min-h-screen"
                 style={{
                     backgroundImage: `url(${
                         phim
@@ -72,20 +82,20 @@ const LayoutPage = () => {
                                 : `https://img.phimapi.com/${phim.thumb_url}`
                             : background
                     })`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
                 }}
             >
-                <div className="relative z-10 w-full min-h-screen">
+                <div className="z-10 w-full min-h-screen bg-black bg-opacity-50 ">
                     <div
                         className="absolute top-[30%] left-[100px] z-[1] text-white text-[60px] font-bold max-w-[40%]"
                         style={{ textShadow: "0 0 5px black" }}
                     >
                         <h2>{phim ? phim.name : "Không có"}</h2>
                         <p className="text-xl">
-                            Lorem ipsum dolor sit, amet consectetur adipisicing
-                            elit. Ab itaque eos, doloribus inventore vero
-                            tenetur nam? Omnis, unde veritatis! Quod nemo nam
-                            autem iure similique beatae dicta ducimus unde
-                            nostrum.
+                            {data
+                                ? data.content
+                                : "Lorem ipsum dolor sit, amet consectetur mot hai ba bon"}
                         </p>
                         <div className="flex gap-5 mt-5">
                             <button className="flex items-center gap-3 px-6 py-3 text-3xl text-black bg-white rounded-lg btn">
@@ -129,11 +139,27 @@ const LayoutPage = () => {
                         </div>
                     </div>
                 </div>
+                {data?.trailer_url && (
+                    <div className="absolute left-0 z-0 mt-5 top-10 ">
+                        <ReactPlayer
+                            url={data.trailer_url}
+                            controls
+                            width="99vw"
+                            style={{
+                                minHeight: "100vh",
+                                objectFit: "cover",
+                            }}
+                            loop={true}
+                            playing={true}
+                            muted={true}
+                        />
+                    </div>
+                )}
             </header>
             <div className="relative">
                 <Outlet />
             </div>
-            <FooterInPageMovies></FooterInPageMovies>
+            <FooterInPageMovies />
         </div>
     );
 };

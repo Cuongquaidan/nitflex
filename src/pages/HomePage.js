@@ -19,7 +19,7 @@ const HomePage = () => {
         true
     );
     return (
-        <div>
+        <div className="py-[100px] overflow-x-hidden">
             {phimMoi && (
                 <MovieList heading={"Phim mới"} data={phimMoi}></MovieList>
             )}

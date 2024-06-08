@@ -56,11 +56,11 @@ const MovieList = ({ heading, data, ...props }) => {
     const responsive = {
         superLargeDesktop: {
             breakpoint: { max: 4000, min: 3000 },
-            items: 6,
+            items: 5,
         },
         desktop: {
             breakpoint: { max: 3000, min: 1024 },
-            items: 6,
+            items: 5,
         },
         tablet: {
             breakpoint: { max: 1024, min: 464 },
@@ -73,7 +73,7 @@ const MovieList = ({ heading, data, ...props }) => {
     };
 
     return (
-        <div className="w-full p-10 mt-5 overflow-x-hidden">
+        <div className="w-full p-10 mt-5 ">
             <Heading>{heading}</Heading>
             <Carousel
                 responsive={responsive}
