@@ -86,7 +86,7 @@ const Navbar = ({ ...props }) => {
                             <NavLink
                                 to={
                                     item.slug !== ""
-                                        ? "genres/" + item.slug
+                                        ? "/genres/" + item.slug
                                         : "/home"
                                 }
                             >

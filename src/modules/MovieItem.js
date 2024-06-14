@@ -1,13 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import background from "../images/sunrise-1590214_1280.jpg";
 import axios from "axios";
 import { Tooltip } from "react-tooltip";
 const MovieItem = ({ item, ...props }) => {
+    const [listLiked, setListLiked] = useState([]);
+    const [listDisLiked, setListDisLiked] = useState([]);
+    const [listFavorite, setListFavorite] = useState([]);
+
     const [isLiked, setIsLiked] = useState(false);
     const [isDisLiked, setIsDisLiked] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [data, setData] = useState(null);
+    function addLocalStorage(name, key, valueAdd) {
+        if (name.includes(valueAdd)) {
+            const newList = [...name];
+            localStorage.setItem(key, JSON.stringify(newList));
+        } else {
+            const newList = [...name, valueAdd];
+            localStorage.setItem(key, JSON.stringify(newList));
+        }
+    }
+
+    function removeLocalStorage(name, key, valueRemove) {
+        const newList = name.filter((item) => item._id !== valueRemove._id);
+        localStorage.setItem(key, JSON.stringify(newList));
+    }
+    console.log(item);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -30,17 +49,39 @@ const MovieItem = ({ item, ...props }) => {
     const dislikeRef = useRef();
     const favoriteRef = useRef();
     useEffect(() => {
-        const favoriteClick = () => setIsFavorite((prev) => !prev);
+        setListLiked(JSON.parse(localStorage.getItem("listLiked")) || []);
+        setListDisLiked(JSON.parse(localStorage.getItem("listDisLiked")) || []);
+        setListFavorite(JSON.parse(localStorage.getItem("listFavorite")) || []);
+    }, []);
+    useEffect(() => {
+        const favoriteClick = () => {
+            setIsFavorite((prev) => !prev);
+            if (!isFavorite) {
+                addLocalStorage(listFavorite, "listFavorite", item);
+            } else {
+                removeLocalStorage(listFavorite, "listFavorite", item);
+            }
+        };
+
         const likeClick = () => {
             setIsLiked((prev) => !prev);
             if (!isLiked) {
+                addLocalStorage(listLiked, "listLiked", item);
                 setIsDisLiked(false);
+                removeLocalStorage(listDisLiked, "listDisLiked", item);
+            } else {
+                removeLocalStorage(listLiked, "listLiked", item);
             }
         };
+
         const dislikeClick = () => {
             setIsDisLiked((prev) => !prev);
             if (!isDisLiked) {
+                addLocalStorage(listDisLiked, "listDisLiked", item);
                 setIsLiked(false);
+                removeLocalStorage(listLiked, "listLiked", item);
+            } else {
+                removeLocalStorage(listDisLiked, "listDisLiked", item);
             }
         };
 
@@ -49,11 +90,19 @@ const MovieItem = ({ item, ...props }) => {
         dislikeRef.current.addEventListener("click", dislikeClick);
 
         return () => {
-            favoriteRef.current.removeEventListener("click", favoriteClick);
-            likeRef.current.removeEventListener("click", likeClick);
-            dislikeRef.current.removeEventListener("click", dislikeClick);
+            favoriteRef?.current?.removeEventListener("click", favoriteClick);
+            likeRef?.current?.removeEventListener("click", likeClick);
+            dislikeRef?.current?.removeEventListener("click", dislikeClick);
         };
-    }, [isDisLiked, isFavorite, isLiked]);
+    }, [
+        isDisLiked,
+        isFavorite,
+        isLiked,
+        item,
+        listDisLiked,
+        listFavorite,
+        listLiked,
+    ]);
 
     useEffect(() => {
         const infoItem = movieItemRef.current.getBoundingClientRect();
@@ -61,9 +110,8 @@ const MovieItem = ({ item, ...props }) => {
             movieItemRef.current.style.display = "none";
             movieItemDetailsRef.current.style.display = "flex";
             const widthScreen = window.innerWidth;
-            const { left, right, top, bottom, width, height } =
+            const { left, right, width, height } =
                 movieItemDetailsRef?.current?.getBoundingClientRect();
-            console.log(infoItem);
             movieItemDetailsRef.current.style.opacity = 1;
             movieItemDetailsRef.current.style.visibility = "visible";
             movieItemDetailsRef.current.style.top =
@@ -96,8 +144,11 @@ const MovieItem = ({ item, ...props }) => {
             handleMouseLeave
         );
     }, []);
-    console.log(item);
-
+    useEffect(() => {
+        setIsLiked(listLiked.some((i) => i._id === item._id));
+        setIsDisLiked(listDisLiked.some((i) => i._id === item._id));
+        setIsFavorite(listFavorite.some((i) => i._id === item._id));
+    }, [listLiked, listDisLiked, listFavorite, item]);
     return (
         <div
             className="bg-black w-[290px]  flex-shrink-0 cursor-pointer movie-item transition-all"
@@ -147,7 +198,13 @@ const MovieItem = ({ item, ...props }) => {
                                         clipRule="evenodd"
                                     />
                                 </svg>
-                                <Tooltip anchorSelect=".play">Chơi nó</Tooltip>
+                                <Tooltip
+                                    anchorSelect=".play"
+                                    delayHide={0.05}
+                                    delayShow={0.05}
+                                >
+                                    Chơi nó
+                                </Tooltip>
                             </div>
                             <div className="flex gap-2" ref={favoriteRef}>
                                 {!isFavorite ? (
@@ -169,6 +226,8 @@ const MovieItem = ({ item, ...props }) => {
                                         <Tooltip
                                             anchorSelect=".favorite"
                                             place="top"
+                                            delayHide={0.05}
+                                            delayShow={0.05}
                                         >
                                             Thêm vào danh sách yêu thích
                                         </Tooltip>
@@ -191,6 +250,8 @@ const MovieItem = ({ item, ...props }) => {
                                         <Tooltip
                                             anchorSelect=".unfavorite"
                                             place="top"
+                                            delayHide={0.05}
+                                            delayShow={0.05}
                                         >
                                             Đã thêm vào danh sách yêu thích
                                         </Tooltip>
@@ -206,7 +267,7 @@ const MovieItem = ({ item, ...props }) => {
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
-                                                stroke-width="1.5"
+                                                strokeWidth="1.5"
                                                 stroke="currentColor"
                                                 className="w-10 h-10 like"
                                             >
@@ -219,6 +280,8 @@ const MovieItem = ({ item, ...props }) => {
                                             <Tooltip
                                                 anchorSelect=".like"
                                                 place="top"
+                                                delayHide={0.05}
+                                                delayShow={0.05}
                                             >
                                                 Like it?
                                             </Tooltip>
@@ -236,6 +299,8 @@ const MovieItem = ({ item, ...props }) => {
                                             <Tooltip
                                                 anchorSelect=".liked"
                                                 place="top"
+                                                delayHide={0.05}
+                                                delayShow={0.05}
                                             >
                                                 Liked!!!
                                             </Tooltip>
@@ -262,6 +327,8 @@ const MovieItem = ({ item, ...props }) => {
                                             <Tooltip
                                                 anchorSelect=".dislike"
                                                 place="top"
+                                                delayHide={0.05}
+                                                delayShow={0.05}
                                             >
                                                 Dislike????
                                             </Tooltip>
@@ -279,6 +346,8 @@ const MovieItem = ({ item, ...props }) => {
                                             <Tooltip
                                                 anchorSelect=".disliked"
                                                 place="top"
+                                                delayHide={0.05}
+                                                delayShow={0.05}
                                             >
                                                 Disliked
                                             </Tooltip>

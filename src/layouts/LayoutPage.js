@@ -6,6 +6,7 @@ import { Outlet, useLocation } from "react-router";
 import useAxios from "../hooks/useAxios";
 import axios from "axios";
 import ReactPlayer from "react-player";
+import { NavLink } from "react-router-dom";
 
 const LayoutPage = () => {
     let location = useLocation();
@@ -98,21 +99,23 @@ const LayoutPage = () => {
                                 : "Lorem ipsum dolor sit, amet consectetur mot hai ba bon"}
                         </p>
                         <div className="flex gap-5 mt-5">
-                            <button className="flex items-center gap-3 px-6 py-3 text-3xl text-black bg-white rounded-lg btn">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="w-10 h-10"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                                Phát
-                            </button>
+                            <NavLink to={`phim/${phim?.slug}/tap-1`}>
+                                <button className="flex items-center gap-3 px-6 py-3 text-3xl text-black bg-white rounded-lg btn">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className="w-10 h-10"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    Phát
+                                </button>
+                            </NavLink>
                             <button
                                 className="flex items-center px-4 py-2 text-3xl border border-gray-600 rounded-lg btn"
                                 style={{

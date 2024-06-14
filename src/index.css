@@ -1,7 +1,3 @@
-:root {
-    --rt-transition-show-delay: 0.05s !important;
-    --rt-transition-closing-delay: 0.05s !important;
-}
 @font-face {
     font-family: "helvetica-neue";
     src: url(./fonts/helveticaNeue/HelveticaNeue-Condensed.otf);

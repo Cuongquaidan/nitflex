@@ -11,6 +11,7 @@ import TVShowsPage from "./pages/TVShowsPage";
 import HoatHinhPage from "./pages/HoatHinhPage";
 import HomeDirecPage from "./pages/HomeDirecPage";
 import PhimMoiPage from "./pages/PhimMoiPage";
+import MovieDetailsPage from "./pages/MovieDetailsPage";
 function App() {
     return (
         <BrowserRouter>
@@ -54,6 +55,10 @@ function App() {
                         element={<HomeDirecPage></HomeDirecPage>}
                     ></Route>
                 </Route>
+                <Route
+                    path="/phim/:slug/:tap"
+                    element={<MovieDetailsPage></MovieDetailsPage>}
+                ></Route>
             </Routes>
         </BrowserRouter>
     );
