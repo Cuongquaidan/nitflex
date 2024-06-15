@@ -5,9 +5,10 @@ import Navbar from "../layouts/Navbar";
 import FooterInPageMovies from "../layouts/FooterInPageMovies";
 import useAxiosGetParams from "../hooks/useAxiosGetParams";
 import ReactPlayer from "react-player";
-
+import Rate from "rc-rate";
 const MovieDetailsPage = () => {
     const location = useLocation();
+    const [stars, setStars] = useState(0.0);
     const slug = location.pathname.substring(
         0,
         location.pathname.indexOf("/tap") + 1
@@ -20,7 +21,7 @@ const MovieDetailsPage = () => {
     const [tap, setTap] = useState(parseInt(tapLocation) - 1);
     const phim = data?.episodes?.[0]?.server_data?.[tap]?.link_embed;
     const url = phim?.substring(phim?.indexOf("=") + 1, phim?.length);
-
+    console.log(url);
     useEffect(() => {
         // Cập nhật URL khi tap thay đổi
         navigate(`${slug}tap-${tap + 1}`);
@@ -95,6 +96,37 @@ const MovieDetailsPage = () => {
                             </div>
                         ))}
                     </div>
+                    <div className="min-h-[200px] bg-gray-800 border rounded-lg border-white mt-10"></div>
+                    <form className="p-4 mt-10 text-xl bg-gray-800 border rounded-lg">
+                        <div>
+                            <h3>Đánh giá</h3>
+                            <Rate
+                                allowHalf={true}
+                                count={5}
+                                value={stars}
+                                onChange={setStars}
+                                style={{
+                                    margin: "16px 0 0 0",
+                                    display: "flex",
+                                    fontSize: "30px",
+                                    color: "#ffd700",
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <h3 className="mt-4">Nhận xét</h3>
+                            <div>
+                                <textarea
+                                    name="comment"
+                                    id="comment"
+                                    className="w-full mt-4 min-h-[200px] p-4 bg-zinc-800"
+                                ></textarea>
+                            </div>
+                        </div>
+                        <button className="block p-2 mt-4 ml-auto border border-white rounded-2xl w-[100px] bg-blue-900">
+                            Gửi
+                        </button>
+                    </form>
                 </div>
             )}
             <FooterInPageMovies />

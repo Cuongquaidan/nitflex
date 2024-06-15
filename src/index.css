@@ -47,3 +47,18 @@ code {
 .react-multi-carousel-item {
     z-index: 10;
 }
+.rc-rate-star {
+    color: #ccc; /* default color */
+    cursor: pointer;
+}
+
+.rc-rate-star:hover {
+    color: #ffcc00; /* hover color */
+}
+
+.rc-rate-star.rc-rate-star-full {
+    color: #ffcc00; /* selected color */
+}
+.rc-rate-star-second {
+    display: none;
+}

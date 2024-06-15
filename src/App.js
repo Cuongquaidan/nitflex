@@ -12,6 +12,7 @@ import HoatHinhPage from "./pages/HoatHinhPage";
 import HomeDirecPage from "./pages/HomeDirecPage";
 import PhimMoiPage from "./pages/PhimMoiPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
+import DanhSachYeuThichPage from "./pages/DanhSachYeuThichPage";
 function App() {
     return (
         <BrowserRouter>
@@ -53,6 +54,10 @@ function App() {
                     <Route
                         path="/genres/:slug"
                         element={<HomeDirecPage></HomeDirecPage>}
+                    ></Route>
+                    <Route
+                        path="/danh-sach-yeu-thich"
+                        element={<DanhSachYeuThichPage></DanhSachYeuThichPage>}
                     ></Route>
                 </Route>
                 <Route

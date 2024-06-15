@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 const data = [
     {
@@ -25,6 +26,8 @@ const data = [
 ];
 
 const Navbar = ({ ...props }) => {
+    const [isSearch, setIsSearch] = useState(false);
+    const [valueSearch, setValueSearch] = useState("");
     const location = useLocation();
     const key = location.pathname.substring(
         location.pathname.indexOf("/genres") + "/genres".length + 1
@@ -59,11 +62,16 @@ const Navbar = ({ ...props }) => {
         transition: "background-color 0.3s ease",
         backgroundColor: isScrolled ? "black" : "transparent",
     };
+    const handleSearch = (e) => {
+        if (e.key === "Enter") {
+            window.location.href = "/genres/" + valueSearch;
+        }
+    };
 
     return (
         <nav
             style={navStyle}
-            className="fixed flex items-center justify-between z-[99] w-full px-16 py-4 text-xl"
+            className="fixed flex items-center justify-between z-[99] w-full px-16 py-4 text-xl min-h-20"
         >
             <div className="flex gap-4 nav-left">
                 <NavLink
@@ -95,9 +103,32 @@ const Navbar = ({ ...props }) => {
                             </NavLink>
                         </li>
                     ))}
+                    <li>
+                        <NavLink to="/danh-sach-yeu-thich">
+                            Danh sách yêu thích
+                        </NavLink>
+                    </li>
                 </ul>
             </div>
             <div className="flex items-center gap-6 nav-right ">
+                {isSearch && (
+                    <div>
+                        <input
+                            type="text"
+                            className="p-2 text-black outline-none w-[400px] searchinput"
+                            onChange={(e) => {
+                                setValueSearch(e.target.value);
+                            }}
+                            value={valueSearch}
+                            onKeyDown={(e) => {
+                                handleSearch(e);
+                            }}
+                        />
+                        <Tooltip anchorSelect=".searchinput">
+                            Enter để tìm
+                        </Tooltip>
+                    </div>
+                )}
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -105,6 +136,9 @@ const Navbar = ({ ...props }) => {
                     strokeWidth="1.5"
                     stroke="currentColor"
                     className="w-6 h-6 cursor-pointer"
+                    onClick={() => {
+                        setIsSearch(!isSearch);
+                    }}
                 >
                     <path
                         strokeLinecap="round"

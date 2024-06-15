@@ -1,32 +1,38 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import background from "../images/sunrise-1590214_1280.jpg";
 import axios from "axios";
 import { Tooltip } from "react-tooltip";
+import { NavLink } from "react-router-dom";
+import LocalStorageContext from "../contexts/LocalStorageContext";
 const MovieItem = ({ item, ...props }) => {
-    const [listLiked, setListLiked] = useState([]);
-    const [listDisLiked, setListDisLiked] = useState([]);
-    const [listFavorite, setListFavorite] = useState([]);
-
+    const {
+        listLiked,
+        setListLiked,
+        listDisLiked,
+        setListDisLiked,
+        listFavorite,
+        setListFavorite,
+    } = useContext(LocalStorageContext);
     const [isLiked, setIsLiked] = useState(false);
     const [isDisLiked, setIsDisLiked] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [data, setData] = useState(null);
-    function addLocalStorage(name, key, valueAdd) {
-        if (name.includes(valueAdd)) {
-            const newList = [...name];
-            localStorage.setItem(key, JSON.stringify(newList));
-        } else {
-            const newList = [...name, valueAdd];
-            localStorage.setItem(key, JSON.stringify(newList));
-        }
-    }
 
-    function removeLocalStorage(name, key, valueRemove) {
-        const newList = name.filter((item) => item._id !== valueRemove._id);
-        localStorage.setItem(key, JSON.stringify(newList));
-    }
-    console.log(item);
+    const movieItemWrapperRef = useRef();
+    const movieItemRef = useRef();
+    const movieItemDetailsRef = useRef();
+
+    useEffect(() => {
+        setListLiked(JSON.parse(localStorage.getItem("listLiked")) || []);
+        setListDisLiked(JSON.parse(localStorage.getItem("listDisLiked")) || []);
+        setListFavorite(JSON.parse(localStorage.getItem("listFavorite")) || []);
+    }, [isDisLiked, isFavorite, isLiked]);
+    useEffect(() => {
+        setIsLiked(listLiked.some((i) => i._id === item._id));
+        setIsDisLiked(listDisLiked.some((i) => i._id === item._id));
+        setIsFavorite(listFavorite.some((i) => i._id === item._id));
+    }, [listLiked, listDisLiked, listFavorite, item]);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -42,67 +48,69 @@ const MovieItem = ({ item, ...props }) => {
             fetchData();
         }
     }, [item]);
-    const movieItemWrapperRef = useRef();
-    const movieItemRef = useRef();
-    const movieItemDetailsRef = useRef();
-    const likeRef = useRef();
-    const dislikeRef = useRef();
-    const favoriteRef = useRef();
+
+    const addLocalStorage = (name, key, valueAdd) => {
+        const newList = [...name];
+        const index = newList.findIndex((item) => item._id === valueAdd._id);
+        if (index === -1) {
+            newList.push(valueAdd);
+        }
+        localStorage.setItem(key, JSON.stringify(newList));
+    };
+
+    const removeLocalStorage = (name, key, valueRemove) => {
+        const newList = name.filter((item) => item._id !== valueRemove._id);
+        localStorage.setItem(key, JSON.stringify(newList));
+    };
+
     useEffect(() => {
-        setListLiked(JSON.parse(localStorage.getItem("listLiked")) || []);
-        setListDisLiked(JSON.parse(localStorage.getItem("listDisLiked")) || []);
-        setListFavorite(JSON.parse(localStorage.getItem("listFavorite")) || []);
-    }, []);
-    useEffect(() => {
-        const favoriteClick = () => {
-            setIsFavorite((prev) => !prev);
-            if (!isFavorite) {
-                addLocalStorage(listFavorite, "listFavorite", item);
-            } else {
-                removeLocalStorage(listFavorite, "listFavorite", item);
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(
+                    `https://phimapi.com/phim/${item?.slug}`
+                );
+                setData(response.data.movie);
+            } catch (error) {
+                console.log(error);
             }
         };
+        if (item) {
+            fetchData();
+        }
+    }, [item]);
 
-        const likeClick = () => {
-            setIsLiked((prev) => !prev);
-            if (!isLiked) {
-                addLocalStorage(listLiked, "listLiked", item);
-                setIsDisLiked(false);
-                removeLocalStorage(listDisLiked, "listDisLiked", item);
-            } else {
-                removeLocalStorage(listLiked, "listLiked", item);
-            }
-        };
+    const favoriteClick = () => {
+        setIsFavorite((prev) => !prev);
+        if (!isFavorite) {
+            addLocalStorage(listFavorite, "listFavorite", item);
+        } else {
+            removeLocalStorage(listFavorite, "listFavorite", item);
+        }
+    };
 
-        const dislikeClick = () => {
-            setIsDisLiked((prev) => !prev);
-            if (!isDisLiked) {
-                addLocalStorage(listDisLiked, "listDisLiked", item);
-                setIsLiked(false);
-                removeLocalStorage(listLiked, "listLiked", item);
-            } else {
-                removeLocalStorage(listDisLiked, "listDisLiked", item);
-            }
-        };
+    const likeClick = () => {
+        setIsLiked((prev) => !prev);
+        console.log(isLiked);
+        if (!isLiked) {
+            console.log(isLiked);
+            addLocalStorage(listLiked, "listLiked", item);
+            setIsDisLiked(false);
+            removeLocalStorage(listDisLiked, "listDisLiked", item);
+        } else {
+            removeLocalStorage(listLiked, "listLiked", item);
+        }
+    };
 
-        favoriteRef.current.addEventListener("click", favoriteClick);
-        likeRef.current.addEventListener("click", likeClick);
-        dislikeRef.current.addEventListener("click", dislikeClick);
-
-        return () => {
-            favoriteRef?.current?.removeEventListener("click", favoriteClick);
-            likeRef?.current?.removeEventListener("click", likeClick);
-            dislikeRef?.current?.removeEventListener("click", dislikeClick);
-        };
-    }, [
-        isDisLiked,
-        isFavorite,
-        isLiked,
-        item,
-        listDisLiked,
-        listFavorite,
-        listLiked,
-    ]);
+    const dislikeClick = () => {
+        setIsDisLiked((prev) => !prev);
+        if (!isDisLiked) {
+            addLocalStorage(listDisLiked, "listDisLiked", item);
+            setIsLiked(false);
+            removeLocalStorage(listLiked, "listLiked", item);
+        } else {
+            removeLocalStorage(listDisLiked, "listDisLiked", item);
+        }
+    };
 
     useEffect(() => {
         const infoItem = movieItemRef.current.getBoundingClientRect();
@@ -144,11 +152,6 @@ const MovieItem = ({ item, ...props }) => {
             handleMouseLeave
         );
     }, []);
-    useEffect(() => {
-        setIsLiked(listLiked.some((i) => i._id === item._id));
-        setIsDisLiked(listDisLiked.some((i) => i._id === item._id));
-        setIsFavorite(listFavorite.some((i) => i._id === item._id));
-    }, [listLiked, listDisLiked, listFavorite, item]);
     return (
         <div
             className="bg-black w-[290px]  flex-shrink-0 cursor-pointer movie-item transition-all"
@@ -186,18 +189,20 @@ const MovieItem = ({ item, ...props }) => {
                     <div className="flex items-center justify-between gap-2 p-4 bg-black">
                         <div className="flex gap-3">
                             <div>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="w-10 h-10 play"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
+                                <NavLink to={`/phim/${item?.slug}/tap-1`}>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className="w-10 h-10 play"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </NavLink>
                                 <Tooltip
                                     anchorSelect=".play"
                                     delayHide={0.05}
@@ -206,7 +211,12 @@ const MovieItem = ({ item, ...props }) => {
                                     Chơi nó
                                 </Tooltip>
                             </div>
-                            <div className="flex gap-2" ref={favoriteRef}>
+                            <div
+                                className="flex gap-2"
+                                onClick={() => {
+                                    favoriteClick();
+                                }}
+                            >
                                 {!isFavorite ? (
                                     <div>
                                         <svg
@@ -260,7 +270,11 @@ const MovieItem = ({ item, ...props }) => {
                             </div>
 
                             <div className="flex gap-2">
-                                <div ref={likeRef}>
+                                <div
+                                    onClick={() => {
+                                        likeClick();
+                                    }}
+                                >
                                     {!isLiked ? (
                                         <div>
                                             <svg
@@ -307,7 +321,11 @@ const MovieItem = ({ item, ...props }) => {
                                         </div>
                                     )}
                                 </div>
-                                <div ref={dislikeRef}>
+                                <div
+                                    onClick={() => {
+                                        dislikeClick();
+                                    }}
+                                >
                                     {!isDisLiked ? (
                                         <div>
                                             <svg
