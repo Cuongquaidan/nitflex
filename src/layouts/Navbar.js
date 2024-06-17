@@ -32,6 +32,7 @@ const Navbar = ({ ...props }) => {
     const key = location.pathname.substring(
         location.pathname.indexOf("/genres") + "/genres".length + 1
     );
+    const key2 = location.pathname;
     const [indexActive, setIndexActive] = useState(0);
     const [showAction, setShowAction] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -55,6 +56,8 @@ const Navbar = ({ ...props }) => {
         data.forEach((item, index) => {
             if (item.slug === key) {
                 setIndexActive(index);
+            } else if (key2 === "danh-sach-yeu-thich") {
+                setIndexActive(data.length);
             }
         });
     }, [location.pathname, key]);
@@ -103,7 +106,14 @@ const Navbar = ({ ...props }) => {
                             </NavLink>
                         </li>
                     ))}
-                    <li>
+                    <li
+                        className={`cursor-pointer ${
+                            data.length === indexActive
+                                ? "text-gray-100 font-semibold"
+                                : ""
+                        }`}
+                        onClick={() => setIndexActive(data.length)}
+                    >
                         <NavLink to="/danh-sach-yeu-thich">
                             Danh sách yêu thích
                         </NavLink>

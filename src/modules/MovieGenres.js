@@ -40,7 +40,7 @@ const MovieGenres = ({
     };
 
     return (
-        <div className="w-full p-20 mx-auto overflow-x-hidden">
+        <div className="w-full px-10 mx-auto overflow-x-hidden py-30">
             <Heading classNameSub={" py-10"}>{heading}</Heading>
             <div className="grid grid-cols-5 gap-10 py-16 mx-auto ">
                 {currentItems?.map((item, index) => (

@@ -173,7 +173,7 @@ const MovieItem = ({ item, ...props }) => {
                     ref={movieItemRef}
                 />
                 <div
-                    className=" w-[400px] h-[400px] bg-black flex-col absolute z-50 opacity-0 invisible  "
+                    className=" w-[400px] h-[400px] bg-black flex-col transition-all absolute z-50 opacity-0 invisible  "
                     style={{ display: "none" }}
                     ref={movieItemDetailsRef}
                 >

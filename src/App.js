@@ -13,10 +13,15 @@ import HomeDirecPage from "./pages/HomeDirecPage";
 import PhimMoiPage from "./pages/PhimMoiPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
 import DanhSachYeuThichPage from "./pages/DanhSachYeuThichPage";
+import SignInPage from "./pages/SignInPage";
 function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route
+                    path="/sign-in"
+                    element={<SignInPage></SignInPage>}
+                ></Route>
                 <Route
                     path="/start-page"
                     element={<StartPage></StartPage>}
@@ -26,7 +31,7 @@ function App() {
                     element={<CreatePassword></CreatePassword>}
                 ></Route>
                 <Route
-                    path="/sign-up/planform"
+                    path="/planform"
                     element={<PlanformPage></PlanformPage>}
                 ></Route>
                 <Route path="/" element={<LayoutPage></LayoutPage>}>

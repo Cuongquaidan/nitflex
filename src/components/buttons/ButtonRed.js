@@ -7,6 +7,7 @@ const ButtonRed = ({
     onClick,
     padding,
     children,
+    handleClick = () => {},
     ...props
 }) => {
     return (

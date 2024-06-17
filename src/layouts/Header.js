@@ -2,7 +2,7 @@ import React from "react";
 import { ButtonRed } from "../components/buttons";
 import { NavLink } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ children = "Sign in", to = "/sign-in", ...props }) => {
     return (
         <header className="flex items-center mx-auto justify-between w-full max-w-[1800px]">
             <NavLink to="/" className="text-[60px] font-bold text-red-600">
@@ -16,7 +16,7 @@ const Header = () => {
                 textSize={"20px"}
                 onClick={() => {}}
             >
-                Sign In
+                <NavLink to={to}>{children}</NavLink>
             </ButtonRed>
         </header>
     );
