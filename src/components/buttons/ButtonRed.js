@@ -4,7 +4,6 @@ const ButtonRed = ({
     width,
     classNameSub,
     textSize,
-    onClick,
     padding,
     children,
     handleClick = () => {},
@@ -22,7 +21,7 @@ const ButtonRed = ({
                 padding,
                 height: "minContent",
             }}
-            onClick={onClick}
+            onClick={handleClick}
             {...props}
         >
             {children}

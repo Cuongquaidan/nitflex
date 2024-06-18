@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import { auth } from "../firebase/firebase-config";
 
 const data = [
     {
@@ -25,7 +26,7 @@ const data = [
     },
 ];
 
-const Navbar = ({ ...props }) => {
+const Navbar = ({ imgUrl = "", userName = "", ...props }) => {
     const [isSearch, setIsSearch] = useState(false);
     const [valueSearch, setValueSearch] = useState("");
     const location = useLocation();
@@ -176,7 +177,7 @@ const Navbar = ({ ...props }) => {
                     onMouseLeave={() => setShowAction(false)}
                 >
                     <img
-                        src=""
+                        src={imgUrl}
                         alt=""
                         className="w-10 h-10 bg-white rounded cursor-pointer"
                     />
@@ -220,7 +221,21 @@ const Navbar = ({ ...props }) => {
                             </svg>
                             Tài khoản
                         </div>
-                        <div className="flex items-center gap-3 p-1">
+                        <div
+                            style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {userName}
+                        </div>
+                        <div
+                            className="flex items-center gap-3 p-1 cursor-pointer"
+                            onClick={() => {
+                                auth.signOut();
+                            }}
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"

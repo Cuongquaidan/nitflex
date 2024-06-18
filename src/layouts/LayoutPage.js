@@ -7,7 +7,8 @@ import useAxios from "../hooks/useAxios";
 import axios from "axios";
 import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
-
+import { auth, db } from "../firebase/firebase-config";
+import { ButtonRed } from "../components/buttons";
 const LayoutPage = () => {
     let location = useLocation();
 
@@ -67,10 +68,11 @@ const LayoutPage = () => {
             fetchData();
         }
     }, [phim]);
-
-    return (
+    const currentUser = auth.currentUser;
+    console.log(auth.currentUser);
+    return currentUser ? (
         <div className="bg-gray-900">
-            <Navbar />
+            <Navbar userName={currentUser.email} imgUrl=""></Navbar>
             <header
                 className="relative w-full min-h-screen"
                 style={{
@@ -163,6 +165,19 @@ const LayoutPage = () => {
                 <Outlet />
             </div>
             <FooterInPageMovies />
+        </div>
+    ) : (
+        <div className="flex flex-col items-center justify-center min-h-screen gap-10 bg-black">
+            <p className="text-4xl font-medium">Vui lòng đăng nhập</p>
+            <ButtonRed
+                padding={"20px"}
+                width={"300px"}
+                height={"100px"}
+                textSize={"40px"}
+                onClick={() => {}}
+            >
+                <NavLink to="/sign-in">Sign in</NavLink>
+            </ButtonRed>
         </div>
     );
 };

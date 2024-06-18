@@ -4,7 +4,20 @@ import { InputPlaceholdrEffec } from "../components/inputs";
 import { ButtonRed } from "../components/buttons";
 import Footer from "../layouts/Footer";
 import ButtonLogin from "../components/buttons/ButtonLogin";
-
+import {
+    isSignInWithEmailLink,
+    sendSignInLinkToEmail,
+    signInWithEmailAndPassword,
+    signInWithEmailLink,
+    signInWithPopup,
+} from "firebase/auth";
+import {
+    auth,
+    db,
+    facebookProvider,
+    googleProvider,
+} from "../firebase/firebase-config";
+import { toast } from "react-toastify";
 const SignInPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -15,6 +28,28 @@ const SignInPage = () => {
     const errorEmail = "Email invalid";
     const regexPassword = /^.{6,60}$/;
     const errorPassword = "Password should be between 6 and 60 characters";
+    const handleSignInWithAccount = () => {};
+
+    const handleSignInWithGoogle = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            console.log("User signed in with Google:", user);
+            // Điều hướng tới trang sau khi đăng nhập thành công
+        } catch (error) {
+            console.error("Error signing in with Google:", error.message);
+        }
+    };
+    const handleSignInWithFacebook = async () => {
+        try {
+            const result = await signInWithPopup(auth, facebookProvider);
+            const user = result.user;
+            console.log("User signed in with Facebook:", user);
+            // Điều hướng tới trang sau khi đăng nhập thành công
+        } catch (error) {
+            console.error("Error signing in with Facebook:", error.message);
+        }
+    };
     return (
         <Fragment>
             <Header to="/sign-up/createPassword">Sign up</Header>
@@ -55,10 +90,18 @@ const SignInPage = () => {
                         padding={20}
                         width={"100%"}
                         type="button"
+                        handleClick={() => {
+                            handleSignInWithAccount();
+                        }}
                     >
                         NEXT
                     </ButtonRed>
-                    <ButtonLogin classNameSub="bg-green-500 text-2xl mt-5 w-full text-white">
+                    <ButtonLogin
+                        classNameSub="bg-green-500 text-2xl mt-5 w-full text-white"
+                        handleClick={() => {
+                            handleSignInWithGoogle();
+                        }}
+                    >
                         {" "}
                         Login with Google
                         <svg
@@ -70,18 +113,12 @@ const SignInPage = () => {
                         </svg>
                     </ButtonLogin>
 
-                    <ButtonLogin classNameSub="bg-yellow-500 text-2xl mt-5 w-full text-white">
-                        Login with Email{" "}
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                            className="w-10 h-10 p-1 "
-                        >
-                            <path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" />
-                        </svg>
-                    </ButtonLogin>
-
-                    <ButtonLogin classNameSub="bg-blue-500 text-2xl mt-5 w-full text-white">
+                    <ButtonLogin
+                        classNameSub="bg-blue-500 text-2xl mt-5 w-full text-white"
+                        handleClick={() => {
+                            handleSignInWithFacebook();
+                        }}
+                    >
                         Login with Facebook
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
