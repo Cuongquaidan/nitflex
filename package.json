@@ -27,6 +27,7 @@
         "react-tooltip": "^5.26.4",
         "slug": "^9.1.0",
         "swr": "^2.2.5",
+        "uid": "^2.0.2",
         "web-vitals": "^2.1.4"
     },
     "scripts": {

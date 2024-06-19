@@ -72,7 +72,13 @@ const LayoutPage = () => {
     console.log(auth.currentUser);
     return currentUser ? (
         <div className="bg-gray-900">
-            <Navbar userName={currentUser.email} imgUrl=""></Navbar>
+            <Navbar
+                userName={currentUser.displayName || currentUser.email}
+                imgUrl={
+                    currentUser.photoURL ||
+                    "https://toigingiuvedep.vn/wp-content/uploads/2021/04/hinh-nen-may-tinh-de-thuong-dep-nhat.jpg"
+                }
+            ></Navbar>
             <header
                 className="relative w-full min-h-screen"
                 style={{

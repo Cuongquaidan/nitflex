@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { auth } from "../firebase/firebase-config";
+import { signOut } from "firebase/auth";
 
 const data = [
     {
@@ -233,7 +234,8 @@ const Navbar = ({ imgUrl = "", userName = "", ...props }) => {
                         <div
                             className="flex items-center gap-3 p-1 cursor-pointer"
                             onClick={() => {
-                                auth.signOut();
+                                signOut(auth);
+                                window.location.href = "/sign-in";
                             }}
                         >
                             <svg

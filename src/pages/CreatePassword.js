@@ -107,6 +107,7 @@ const CreatePassword = () => {
                     setDoc(doc(db, "users", id), {
                         account: email,
                         password: password,
+                        image: "",
                         createAt: Timestamp.fromDate(new Date()),
                         updateAt: Timestamp.fromDate(new Date()),
                     })

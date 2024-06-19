@@ -4,21 +4,25 @@ import { InputPlaceholdrEffec } from "../components/inputs";
 import { ButtonRed } from "../components/buttons";
 import Footer from "../layouts/Footer";
 import ButtonLogin from "../components/buttons/ButtonLogin";
-import {
-    isSignInWithEmailLink,
-    sendSignInLinkToEmail,
-    signInWithEmailAndPassword,
-    signInWithEmailLink,
-    signInWithPopup,
-} from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import {
     auth,
     db,
     facebookProvider,
     googleProvider,
 } from "../firebase/firebase-config";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import {
+    Timestamp,
+    collection,
+    doc,
+    getDocs,
+    query,
+    setDoc,
+    where,
+} from "firebase/firestore";
 const SignInPage = () => {
+    console.log(auth.currentUser);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const regexEmail =
@@ -28,31 +32,80 @@ const SignInPage = () => {
     const errorEmail = "Email invalid";
     const regexPassword = /^.{6,60}$/;
     const errorPassword = "Password should be between 6 and 60 characters";
-    const handleSignInWithAccount = () => {};
-
-    const handleSignInWithGoogle = async () => {
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-            console.log("User signed in with Google:", user);
-            // Điều hướng tới trang sau khi đăng nhập thành công
-        } catch (error) {
-            console.error("Error signing in with Google:", error.message);
-        }
+    const handleSignInWithAccount = async () => {
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                window.location.href = "/home";
+                // ...
+            })
+            .catch((errorSignIn) => {
+                const errorSignInCode = errorSignIn.code;
+                const errorSignInMessage = errorSignIn.message;
+            });
     };
-    const handleSignInWithFacebook = async () => {
-        try {
-            const result = await signInWithPopup(auth, facebookProvider);
-            const user = result.user;
-            console.log("User signed in with Facebook:", user);
-            // Điều hướng tới trang sau khi đăng nhập thành công
-        } catch (error) {
-            console.error("Error signing in with Facebook:", error.message);
-        }
+
+    // const handleSignInWithGoogle = async () => {
+    //     try {
+    //         const result = await signInWithPopup(auth, googleProvider);
+    //         const user = result.user;
+    //         console.log(result);
+    //     } catch (error) {
+    //         console.error("Error signing in with Google:", error.message);
+    //     }
+    // };
+    const handleSignInWithFacebook = () => {
+        signInWithPopup(auth, facebookProvider)
+            .then((result) => {
+                // The signed-in user info.
+                const user = result.user;
+                console.log(user);
+                const q = query(
+                    collection(db, "users"),
+                    where("account", "==", user.email)
+                );
+                const querySnapshot = getDocs(q);
+                if (querySnapshot.size > 0) {
+                    window.location.href = "/home";
+                } else {
+                    setDoc(doc(db, "users", user.uid), {
+                        account: user.email,
+                        password: "",
+                        image: user.photoURL,
+                        createAt: Timestamp.fromDate(new Date()),
+                        updateAt: Timestamp.fromDate(new Date()),
+                    })
+                        .then(() => {
+                            window.location.href = "/home";
+                        })
+                        .catch((error) => {
+                            console.error(
+                                "Error adding user to Firestore: ",
+                                error
+                            );
+                        });
+                }
+            })
+            .catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode);
+                if (
+                    errorCode ===
+                    "auth/account-exists-with-different-credential"
+                ) {
+                    toast.error("This email address already exists");
+                }
+
+                // ...
+            });
     };
     return (
         <Fragment>
             <Header to="/sign-up/createPassword">Sign up</Header>
+            <ToastContainer></ToastContainer>
             <div className="pt-10 border-t-2 text-gray-950">
                 <form className="w-[400px] mx-auto ">
                     <h3 className="text-[40px] font-semibold">Login</h3>
@@ -96,7 +149,7 @@ const SignInPage = () => {
                     >
                         NEXT
                     </ButtonRed>
-                    <ButtonLogin
+                    {/* <ButtonLogin
                         classNameSub="bg-green-500 text-2xl mt-5 w-full text-white"
                         handleClick={() => {
                             handleSignInWithGoogle();
@@ -111,7 +164,7 @@ const SignInPage = () => {
                         >
                             <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
                         </svg>
-                    </ButtonLogin>
+                    </ButtonLogin> */}
 
                     <ButtonLogin
                         classNameSub="bg-blue-500 text-2xl mt-5 w-full text-white"

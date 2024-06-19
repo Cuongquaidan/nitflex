@@ -53,6 +53,14 @@ const StartPage = () => {
                                 padding={"10px"}
                                 width={"200px"}
                                 textSize={"20px"}
+                                classNameSub={
+                                    regexEmail.test(email) ? "" : " opacity-50"
+                                }
+                                disabled={regexEmail.test(email) ? false : true}
+                                handleClick={() => {
+                                    window.location.href =
+                                        "/sign-up/createPassword";
+                                }}
                             >
                                 Get Started
                                 <svg
