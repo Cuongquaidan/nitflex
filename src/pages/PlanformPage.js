@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderSignOut from "../layouts/HeaderSignOut";
 import Footer from "../layouts/Footer";
 import ButtonRed from "../components/buttons/ButtonRed";
+import {
+    Timestamp,
+    collection,
+    onSnapshot,
+    query,
+    where,
+} from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
 
 const PlanformPage = () => {
     const data = [
@@ -54,10 +62,52 @@ const PlanformPage = () => {
             isMostPopular: false,
         },
     ];
-    const [selectIndex, sẹtSelectIndex] = useState();
+    const [nameSelect, setNameSelect] = useState("");
+    const [priceSelect, setPriceSelect] = useState(0);
+    const [selectIndex, setSelectIndex] = useState(null);
+    const [urlQR, setUrlQR] = useState("");
+    const user = auth.currentUser;
+
     const handleClickItem = (index) => {
-        sẹtSelectIndex(index);
+        setSelectIndex(index);
     };
+    const handleCheckBanking = () => {
+        const currentTime = Timestamp.now();
+        const twentyMinutesAgo = new Timestamp(
+            currentTime.seconds - 20 * 60,
+            currentTime.nanoseconds
+        );
+        const q = query(
+            collection(db, "transactions"),
+            where("when", ">=", twentyMinutesAgo)
+        );
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const trans = [];
+            querySnapshot.forEach((doc) => {
+                trans.push({ id: doc.id, ...doc.data() });
+            });
+            return trans;
+        });
+        console.log(unsubscribe);
+    };
+    const MY_BANK = {
+        BANK_ID: "MB",
+        ACCOUNT_NO: "0001533571012",
+        TEMPLATE: "print",
+    };
+    useEffect(() => {
+        if (selectIndex !== null) {
+            setNameSelect(data[selectIndex]?.name);
+            setPriceSelect(data[selectIndex]?.MonthlyPrice);
+            setUrlQR(
+                `https://img.vietqr.io/image/${MY_BANK.BANK_ID}-${
+                    MY_BANK.ACCOUNT_NO
+                }-${MY_BANK.TEMPLATE}.png?amount=${
+                    data[selectIndex]?.MonthlyPrice
+                }&addInfo=${user?.uid + "-" + data[selectIndex]?.name}`
+            );
+        }
+    }, [selectIndex]);
     return (
         <div>
             <HeaderSignOut></HeaderSignOut>
@@ -181,10 +231,18 @@ const PlanformPage = () => {
                         );
                     })}
                 </div>
+                <div>
+                    {selectIndex !== null && (
+                        <div className="max-w-screen-sm mx-auto mt-40">
+                            <img src={urlQR} alt="bank" />
+                        </div>
+                    )}
+                </div>
                 <ButtonRed
                     classNameSub={"w-[400px] p-3 mt-10 mx-auto text-[20px]"}
+                    handleClick={handleCheckBanking}
                 >
-                    Next
+                    Hoàn thành
                 </ButtonRed>
             </div>
             <Footer></Footer>
