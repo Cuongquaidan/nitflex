@@ -11,7 +11,11 @@ const ButtonLogin = ({
 }) => {
     return (
         <button
-            className={"block min-w-24  rounded-xl p-2  " + " " + classNameSub}
+            className={
+                "block min-w-24 max-w-[80vw]  rounded-xl p-2  " +
+                " " +
+                classNameSub
+            }
             onClick={handleClick}
         >
             <NavLink to={to} className="flex items-center justify-between">

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../layouts/Navbar";
 import FooterInPageMovies from "../layouts/FooterInPageMovies";
 import useAxiosGetParams from "../hooks/useAxiosGetParams";
@@ -16,10 +16,12 @@ import {
     query,
     setDoc,
 } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase/firebase-config2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { uid } from "uid";
+import { ButtonRed } from "../components/buttons";
+import AuthContext from "../contexts/AuthContext";
 
 const MovieDetailsPage = () => {
     const location = useLocation();
@@ -66,8 +68,6 @@ const MovieDetailsPage = () => {
         setTap(index);
     }
 
-    const user = auth.currentUser;
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -108,8 +108,8 @@ const MovieDetailsPage = () => {
 
         return () => unsubscribe();
     }, []);
-
-    return (
+    const user = useContext(AuthContext);
+    return user ? (
         <div className="min-h-screen bg-gray-900">
             <Navbar
                 imgUrl={user.photoURL || ""}
@@ -121,7 +121,7 @@ const MovieDetailsPage = () => {
                     <p className="text-2xl text-white">Đang tải dữ liệu...</p>
                 </div>
             ) : (
-                <div className="p-[150px] mx-auto">
+                <div className="lg:p-[150px] p-5 mx-auto pt-20">
                     <div>
                         <h2 className="text-3xl">{data.movie.name}</h2>
                     </div>
@@ -141,18 +141,18 @@ const MovieDetailsPage = () => {
                     <div className="flex justify-center gap-10">
                         <button
                             onClick={handlePre}
-                            className="w-[300px] p-4 cursor-pointer text-white bg-pink-700 text-4xl font-medium block rounded-lg"
+                            className="md:w-[300px] w-[150px] md:p-4 p-2 cursor-pointer text-white bg-pink-700 md:text-4xl text-xl font-medium block rounded-lg"
                         >
                             Tập trước
                         </button>
                         <button
                             onClick={handleNext}
-                            className="w-[300px] p-4 cursor-pointer text-white bg-pink-700 text-4xl font-medium block rounded-lg"
+                            className="md:w-[300px] w-[150px] md:p-4 p-2 cursor-pointer text-white bg-pink-700 md:text-4xl text-xl font-medium block rounded-lg"
                         >
                             Tập sau
                         </button>
                     </div>
-                    <div className="flex gap-4 mt-20 max-w-[100%]">
+                    <div className="flex gap-4 mt-20 max-w-[100%] flex-wrap mx-auto">
                         {data.episodes[0].server_data.map((item, index) => (
                             <div
                                 className={`p-3 border-gray-400 border rounded-lg min-w-[40px] text-center cursor-pointer ${
@@ -232,6 +232,19 @@ const MovieDetailsPage = () => {
                 </div>
             )}
             <FooterInPageMovies />
+        </div>
+    ) : (
+        <div className="flex flex-col items-center justify-center min-h-screen gap-10 bg-black">
+            <p className="text-4xl font-medium">Vui lòng đăng nhập</p>
+            <ButtonRed
+                padding={"20px"}
+                width={"300px"}
+                height={"100px"}
+                textSize={"40px"}
+                onClick={() => {}}
+            >
+                <NavLink to="/sign-in">Sign in</NavLink>
+            </ButtonRed>
         </div>
     );
 };

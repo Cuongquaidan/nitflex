@@ -29,6 +29,7 @@ const data = [
 
 const Navbar = ({ imgUrl = "", userName = "", ...props }) => {
     const [isSearch, setIsSearch] = useState(false);
+    const [isShowMenu, setIsShowMenu] = useState(false);
     const [valueSearch, setValueSearch] = useState("");
     const location = useLocation();
     const key = location.pathname.substring(
@@ -76,9 +77,68 @@ const Navbar = ({ imgUrl = "", userName = "", ...props }) => {
     return (
         <nav
             style={navStyle}
-            className="fixed flex items-center justify-between z-[99] w-full px-16 py-4 text-xl min-h-20"
+            className="fixed flex items-center justify-between z-[99] w-full px-16 py-4 text-xl min-h-20 max-w-[100%]"
         >
-            <div className="flex gap-4 nav-left">
+            <div className="relative xl:hidden">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-10 h-10"
+                    onClick={() => {
+                        setIsShowMenu(!isShowMenu);
+                    }}
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+                    />
+                </svg>
+                {isShowMenu && (
+                    <div className="absolute top-[50px] left-[0] min-w-[200px] max-w-[100%] bg-black p-5  rounded-lg border border-white">
+                        <ul className="flex flex-col w-full gap-3 text-gray-300">
+                            {data.map((item, index) => (
+                                <li
+                                    className={`cursor-pointer min-w-[100px] border-b border-white ${
+                                        index === indexActive
+                                            ? "text-gray-100 font-semibold"
+                                            : ""
+                                    }`}
+                                    key={index}
+                                    onClick={() => setIndexActive(index)}
+                                >
+                                    <NavLink
+                                        to={
+                                            item.slug !== ""
+                                                ? "/genres/" + item.slug
+                                                : "/home"
+                                        }
+                                    >
+                                        {" "}
+                                        {item.name}
+                                    </NavLink>
+                                </li>
+                            ))}
+                            <li
+                                className={`cursor-pointer ${
+                                    data.length === indexActive
+                                        ? "text-gray-100 font-semibold"
+                                        : ""
+                                }`}
+                                onClick={() => setIndexActive(data.length)}
+                            >
+                                <NavLink to="/danh-sach-yeu-thich">
+                                    Danh sách yêu thích
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </div>
+                )}
+            </div>
+            <div className="hidden gap-4 xl:flex nav-left">
                 <NavLink
                     to="/home"
                     className="text-[40px] font-bold text-red-600"

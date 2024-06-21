@@ -42,7 +42,7 @@ const MovieGenres = ({
     return (
         <div className="w-full px-10 mx-auto overflow-x-hidden py-30">
             <Heading classNameSub={" py-10"}>{heading}</Heading>
-            <div className="grid grid-cols-5 gap-10 py-16 mx-auto ">
+            <div className="grid items-center justify-center grid-cols-1 gap-10 py-16 mx-auto xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2">
                 {currentItems?.map((item, index) => (
                     <MovieItem key={item._id} item={item}></MovieItem>
                 ))}

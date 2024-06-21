@@ -1,16 +1,20 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import Header from "../layouts/Header";
 import { InputPlaceholdrEffec } from "../components/inputs";
 import { ButtonRed } from "../components/buttons";
 import Footer from "../layouts/Footer";
 import ButtonLogin from "../components/buttons/ButtonLogin";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut,
+} from "firebase/auth";
 import {
     auth,
     db,
     facebookProvider,
     googleProvider,
-} from "../firebase/firebase-config";
+} from "../firebase/firebase-config2";
 import { ToastContainer, toast } from "react-toastify";
 import {
     Timestamp,
@@ -21,8 +25,10 @@ import {
     setDoc,
     where,
 } from "firebase/firestore";
+import AuthContext, { AuthProvider } from "../contexts/AuthContext";
+import { NavLink } from "react-router-dom";
 const SignInPage = () => {
-    console.log(auth.currentUser);
+    const user = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const regexEmail =
@@ -102,12 +108,35 @@ const SignInPage = () => {
                 // ...
             });
     };
-    return (
-        <Fragment>
-            <Header to="/sign-up/createPassword">Sign up</Header>
+    return user ? (
+        <div className="flex flex-col items-center justify-center w-full min-h-screen text-black text-[25px]">
+            <div className="flex flex-col items-center justify-center p-10 bg-yellow-100 border border-black rounded-lg">
+                <p>Đang đăng nhập: {user.email}</p>
+                <div className="flex items-center gap-10 mt-5">
+                    <button
+                        className="text-gray-800 text-[20px] font-semibold hover:underline border border-black p-3 rounded-md hover:bg-red-600 hover:text-white"
+                        onClick={() => {
+                            signOut(auth);
+                            window.location.href = "/sign-in";
+                        }}
+                    >
+                        Sign Out
+                    </button>
+                    <NavLink
+                        to="/home"
+                        className="p-3 bg-green-500 rounded-md hover:underline"
+                    >
+                        Back Home
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+    ) : (
+        <div className="min-h-[100vh] flex flex-col justify-between">
+            <Header to="/sign-up/createPassword ">Sign up</Header>
             <ToastContainer></ToastContainer>
-            <div className="pt-10 border-t-2 text-gray-950">
-                <form className="w-[400px] mx-auto ">
+            <div className="flex flex-col items-center justify-between pt-10 border-t-2 text-gray-950 sm:block">
+                <form className="w-[400px] max-w-[80vw] mx-auto flex flex-col items-center sm:block ">
                     <h3 className="text-[40px] font-semibold">Login</h3>
                     <p className="my-4 text-xl text-gray-500">
                         If you don't have an account, you can register with the
@@ -182,9 +211,9 @@ const SignInPage = () => {
                         </svg>
                     </ButtonLogin>
                 </form>
-                <Footer></Footer>
             </div>
-        </Fragment>
+            <Footer></Footer>
+        </div>
     );
 };
 

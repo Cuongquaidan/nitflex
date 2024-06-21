@@ -12,7 +12,7 @@ const ButtonRed = ({
     return (
         <button
             className={
-                "flex justify-center font-semibold text-white bg-red-600 rounded-lg " +
+                "flex justify-center flex-shrink font-semibold text-white bg-red-600 rounded-lg " +
                 `${classNameSub}`
             }
             style={{
@@ -20,6 +20,7 @@ const ButtonRed = ({
                 fontSize: textSize,
                 padding,
                 height: "minContent",
+                maxWidth: "80vw",
             }}
             onClick={handleClick}
             {...props}

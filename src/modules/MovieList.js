@@ -8,7 +8,7 @@ const CustomLeftArrow = ({ onClick }) => {
     return (
         <button
             onClick={onClick}
-            className="absolute top-1/2 transform -translate-y-1/2 left-[0px] z-10 bg-[rgba(0,0,0,0.5)] p-2 rounded-full"
+            className="absolute top-1/2 transform -translate-y-1/2 left-[0px] z-10 bg-[rgba(0,0,0,0.5)] p-2 rounded-full xl:block hidden"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ const CustomRightArrow = ({ onClick }) => {
     return (
         <button
             onClick={onClick}
-            className="absolute top-1/2 transform -translate-y-1/2 right-[0px] z-[99] bg-[rgba(0,0,0,0.5)] p-2 rounded-full"
+            className="absolute top-1/2 transform -translate-y-1/2 right-[0px] z-[99] bg-[rgba(0,0,0,0.5)] p-2 rounded-full xl:block hidden"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -57,18 +57,38 @@ const MovieList = ({ heading, data, ...props }) => {
         superLargeDesktop: {
             breakpoint: { max: 4000, min: 3000 },
             items: 5,
+            partialVisibilityGutter: 10,
+            slidesToSlide: 5,
         },
         desktop: {
-            breakpoint: { max: 3000, min: 1024 },
+            breakpoint: { max: 3000, min: 1440 },
             items: 5,
+            partialVisibilityGutter: 10,
+            slidesToSlide: 5,
         },
         tablet: {
-            breakpoint: { max: 1024, min: 464 },
-            items: 3,
+            breakpoint: { max: 1440, min: 1280 },
+            items: 4,
+            partialVisibilityGutter: 10,
+            slidesToSlide: 4,
         },
         mobile: {
-            breakpoint: { max: 464, min: 0 },
+            breakpoint: { max: 1280, min: 1080 },
+            items: 3,
+            partialVisibilityGutter: 10,
+            slidesToSlide: 3,
+        },
+        sss: {
+            breakpoint: { max: 1080, min: 680 },
+            items: 2,
+            partialVisibilityGutter: 10,
+            slidesToSlide: 2,
+        },
+        xxx: {
+            breakpoint: { max: 680, min: 0 },
             items: 1,
+            partialVisibilityGutter: 10,
+            slidesToSlide: 1,
         },
     };
 
@@ -80,7 +100,7 @@ const MovieList = ({ heading, data, ...props }) => {
                 infinite={true}
                 keyBoardControl={true}
                 containerClass="carousel-container"
-                itemClass="carousel-item-padding-40-px"
+                itemClass="carousel-item-padding-40-px "
                 customLeftArrow={<CustomLeftArrow />}
                 customRightArrow={<CustomRightArrow />}
                 className="mt-5"

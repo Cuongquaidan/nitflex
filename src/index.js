@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { LocalStorageProvider } from "./contexts/LocalStorageContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <LocalStorageProvider>
-        <App />
+        <AuthProvider>
+            <App />
+        </AuthProvider>
     </LocalStorageProvider>
 );
 

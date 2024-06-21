@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import Header from "../layouts/Header";
 import InputPlaceholdrEffec from "../components/inputs/InputPlaceholdrEffec";
 import { ButtonRed } from "../components/buttons";
@@ -7,8 +7,9 @@ import axios from "axios";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    signOut,
 } from "firebase/auth";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase/firebase-config2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -21,6 +22,8 @@ import {
     query,
     getDocs,
 } from "firebase/firestore";
+import AuthContext from "../contexts/AuthContext";
+import { NavLink } from "react-router-dom";
 const CreatePassword = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -32,6 +35,8 @@ const CreatePassword = () => {
     const errorEmail = "Email invalid";
     const regexPassword = /^.{6,60}$/;
     const errorPassword = "Password should be between 6 and 60 characters";
+
+    const user = useContext(AuthContext);
     const handleCreateAndSignIn = async () => {
         // signInWithEmailAndPassword(auth, email, password)
         //     .then((userCredential) => {
@@ -93,7 +98,6 @@ const CreatePassword = () => {
         //     .catch((createError) => {
         //         setError(createError.message);
         //     });
-
         const q = query(collection(db, "users"), where("account", "==", email));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.size > 0) {
@@ -137,16 +141,39 @@ const CreatePassword = () => {
                 });
         }
     };
-    return (
-        <div className="relative">
+    return user ? (
+        <div className="flex flex-col items-center justify-center w-full min-h-screen text-black text-[25px]">
+            <div className="flex flex-col items-center justify-center p-10 bg-yellow-100 border border-black rounded-lg">
+                <p>Đang đăng nhập: {user.email}</p>
+                <div className="flex items-center gap-10 mt-5">
+                    <button
+                        className="text-gray-800 text-[20px] font-semibold hover:underline border border-black p-3 rounded-md hover:bg-red-600 hover:text-white"
+                        onClick={() => {
+                            signOut(auth);
+                            window.location.href = "/sign-in";
+                        }}
+                    >
+                        Sign Out
+                    </button>
+                    <NavLink
+                        to="/home"
+                        className="p-3 bg-green-500 rounded-md hover:underline"
+                    >
+                        Back Home
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+    ) : (
+        <div className="relative ">
             <ToastContainer></ToastContainer>
             <Header></Header>
-            <div className="pt-10 border-t-2 text-gray-950">
-                <form className="w-[400px] mx-auto">
-                    <h3 className="text-[40px] font-semibold">
+            <div className="pt-10 border-t-2 text-gray-950 ">
+                <form className="sm:w-[400px] w-[100%] mx-auto">
+                    <h3 className="sm:text-[40px] text-[30px] font-semibold p-3">
                         Create a password to start your membership
                     </h3>
-                    <p className="my-4 text-xl text-gray-500">
+                    <p className="p-3 my-4 text-base text-gray-500 sm:text-xl">
                         Just a few more steps and you're done! <br /> We hate
                         paperwork, too.
                     </p>
@@ -157,7 +184,9 @@ const CreatePassword = () => {
                         textSizeNum={20}
                         regex={regexEmail}
                         errorNoti={errorEmail}
-                        classNameSub={" bg-[#eee!important] outline-black"}
+                        classNameSub={
+                            " bg-[#eee!important] outline-black max-w-[100%important]"
+                        }
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     ></InputPlaceholdrEffec>
@@ -177,14 +206,14 @@ const CreatePassword = () => {
 
                     <ButtonRed
                         classNameSub={
-                            "mt-16 text-[20px] " +
+                            "mt-16 text-[20px] mx-auto " +
                             (regexEmail.test(email) &&
                             regexPassword.test(password)
                                 ? ""
                                 : "opacity-50")
                         }
                         padding={20}
-                        width={"100%"}
+                        width={"80%"}
                         type="button"
                         handleClick={() => handleCreateAndSignIn()}
                         disabled={

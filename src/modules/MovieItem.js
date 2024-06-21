@@ -154,7 +154,7 @@ const MovieItem = ({ item, ...props }) => {
     }, []);
     return (
         <div
-            className="bg-black w-[290px]  flex-shrink-0 cursor-pointer movie-item transition-all"
+            className="bg-black md:w-[290px] mx-auto  flex-shrink-0 cursor-pointer movie-item transition-all"
             data-id={item._id}
         >
             <div

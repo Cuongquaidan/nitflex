@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import background from "../images/sunrise-1590214_1280.jpg";
 import FooterInPageMovies from "./FooterInPageMovies";
@@ -7,8 +7,9 @@ import useAxios from "../hooks/useAxios";
 import axios from "axios";
 import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase/firebase-config2";
 import { ButtonRed } from "../components/buttons";
+import AuthContext from "../contexts/AuthContext";
 const LayoutPage = () => {
     let location = useLocation();
 
@@ -68,8 +69,8 @@ const LayoutPage = () => {
             fetchData();
         }
     }, [phim]);
-    const currentUser = auth.currentUser;
-    console.log(auth.currentUser);
+    const currentUser = useContext(AuthContext);
+    console.log(currentUser);
     return currentUser ? (
         <div className="bg-gray-900">
             <Navbar
@@ -80,7 +81,7 @@ const LayoutPage = () => {
                 }
             ></Navbar>
             <header
-                className="relative w-full min-h-screen"
+                className="relative w-full md:min-h-screen min-h-[50vh]"
                 style={{
                     backgroundImage: `url(${
                         phim
@@ -95,13 +96,13 @@ const LayoutPage = () => {
                     backgroundRepeat: "no-repeat",
                 }}
             >
-                <div className="z-10 w-full min-h-screen bg-black bg-opacity-50 ">
+                <div className="z-10 w-full min-h-[100%] bg-black bg-opacity-50 ">
                     <div
-                        className="absolute top-[30%] left-[100px] z-[1] text-white text-[60px] font-bold max-w-[40%]"
+                        className="absolute top-[30%] md:left-[100px] left-5 z-[1] text-white xl:text-[60px] md:text-[30px] text-[20px] font-bold max-w-[40%]"
                         style={{ textShadow: "0 0 5px black" }}
                     >
                         <h2>{phim ? phim.name : "Không có"}</h2>
-                        <p className="text-xl">
+                        <p className="hidden text-xl md:block">
                             {data
                                 ? data.content
                                 : "Lorem ipsum dolor sit, amet consectetur mot hai ba bon"}
@@ -125,7 +126,7 @@ const LayoutPage = () => {
                                 </button>
                             </NavLink>
                             <button
-                                className="flex items-center px-4 py-2 text-3xl border border-gray-600 rounded-lg btn"
+                                className="items-center hidden px-4 py-2 text-3xl border border-gray-600 rounded-lg xl:flex btn"
                                 style={{
                                     background:
                                         "linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%)",
@@ -157,7 +158,7 @@ const LayoutPage = () => {
                             controls
                             width="99vw"
                             style={{
-                                minHeight: "100vh",
+                                minHeight: "100%",
                                 objectFit: "cover",
                             }}
                             loop={true}

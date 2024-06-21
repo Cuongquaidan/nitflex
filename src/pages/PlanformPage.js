@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HeaderSignOut from "../layouts/HeaderSignOut";
 import Footer from "../layouts/Footer";
 import ButtonRed from "../components/buttons/ButtonRed";
 import {
     Timestamp,
     collection,
+    doc,
+    getDoc,
+    getDocs,
     onSnapshot,
     query,
+    setDoc,
+    updateDoc,
     where,
 } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase/firebase-config2";
+import { ToastContainer, toast } from "react-toastify";
+import AuthContext from "../contexts/AuthContext";
+import { NavLink } from "react-router-dom";
 
 const PlanformPage = () => {
     const data = [
         {
             name: "Premium",
             des: "4K + HDR",
-            MonthlyPrice: "260,000 đ",
+            MonthlyPrice: 5000,
             Quality: "Best",
             Resolution: "4K (Ultra HD) + HDR",
             audio: "Included",
@@ -28,7 +36,7 @@ const PlanformPage = () => {
         {
             name: "Standard",
             des: "1080p",
-            MonthlyPrice: "220,000 đ",
+            MonthlyPrice: 5000,
             Quality: "Great",
             Resolution: "1080p(Full HD)",
             audio: null,
@@ -40,7 +48,7 @@ const PlanformPage = () => {
         {
             name: "Basic",
             des: "720p",
-            MonthlyPrice: "108,000 đ",
+            MonthlyPrice: 5000,
             Quality: "Good",
             Resolution: "720p(HD)",
             audio: null,
@@ -52,7 +60,7 @@ const PlanformPage = () => {
         {
             name: "Mobile",
             des: "480p",
-            MonthlyPrice: "70,000 đ",
+            MonthlyPrice: 5000,
             Quality: "Fair",
             Resolution: "720p(HD)",
             audio: null,
@@ -66,10 +74,12 @@ const PlanformPage = () => {
     const [priceSelect, setPriceSelect] = useState(0);
     const [selectIndex, setSelectIndex] = useState(null);
     const [urlQR, setUrlQR] = useState("");
-    const user = auth.currentUser;
+
+    const user = useContext(AuthContext);
 
     const handleClickItem = (index) => {
         setSelectIndex(index);
+        toast.info("Kéo xuống để thanh toán");
     };
     const handleCheckBanking = () => {
         const currentTime = Timestamp.now();
@@ -81,14 +91,49 @@ const PlanformPage = () => {
             collection(db, "transactions"),
             where("when", ">=", twentyMinutesAgo)
         );
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const trans = [];
-            querySnapshot.forEach((doc) => {
-                trans.push({ id: doc.id, ...doc.data() });
+
+        const trans = [];
+        getDocs(q)
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    trans.push({ id: doc.id, ...doc.data() });
+                });
+
+                console.log("All transactions:", trans);
+
+                const tranFilter = trans.filter(
+                    (item) =>
+                        item.amount === priceSelect &&
+                        item.description.includes(nameSelect)
+                );
+
+                console.log("Filtered transactions:", tranFilter);
+
+                if (tranFilter.length > 0) {
+                    // Lấy thông tin giao dịch cuối cùng
+                    const tranLast = tranFilter[tranFilter.length - 1];
+                    const idUser = tranLast.description.substring(
+                        0,
+                        tranLast.description.indexOf("mode")
+                    );
+                    const modeActive = tranLast.description.substring(
+                        tranLast.description.indexOf("mode") + 4, // +4 để bỏ qua chữ "mode"
+                        tranLast.description.length
+                    );
+                    updateDoc(doc(db, "users", idUser), {
+                        isActive: modeActive,
+                    }).then(() => {
+                        window.location.href = "/home";
+                    });
+                    console.log("modeActive:", modeActive, "idUser:", idUser);
+                } else {
+                    toast.error("Chưa thanh toán");
+                    console.log("No matching transactions found.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error getting documents: ", error);
             });
-            return trans;
-        });
-        console.log(unsubscribe);
     };
     const MY_BANK = {
         BANK_ID: "MB",
@@ -104,23 +149,24 @@ const PlanformPage = () => {
                     MY_BANK.ACCOUNT_NO
                 }-${MY_BANK.TEMPLATE}.png?amount=${
                     data[selectIndex]?.MonthlyPrice
-                }&addInfo=${user?.uid + "-" + data[selectIndex]?.name}`
+                }&addInfo=${user?.uid + "mode" + data[selectIndex]?.name}`
             );
         }
     }, [selectIndex]);
-    return (
+    return user ? (
         <div>
             <HeaderSignOut></HeaderSignOut>
-            <div className="w-[1240px] text-gray-950 mx-auto">
+            <ToastContainer theme="dark"></ToastContainer>
+            <div className="w-[1240px] text-gray-950 mx-auto max-w-[100%] sm:p-20 p-2 flex flex-col items-center sm:items-start">
                 <h3 className="text-3xl font-semibold">
                     Choose the plan that's right for you
                 </h3>
-                <div className="flex justify-between w-full mt-6">
+                <div className="grid justify-between w-full grid-cols-1 gap-10 mt-6 2xl:grid-cols-4 md:grid-cols-2">
                     {data.map((item, index) => {
                         return (
                             <div
                                 key={index}
-                                className={`w-[24%] border-gray-600 rounded-lg border min-h-24  ${
+                                className={` border-gray-600 rounded-lg border min-h-24  ${
                                     index === selectIndex
                                         ? "shadow-md shadow-pink-600"
                                         : ""
@@ -231,7 +277,7 @@ const PlanformPage = () => {
                         );
                     })}
                 </div>
-                <div>
+                <div className="w-full">
                     {selectIndex !== null && (
                         <div className="max-w-screen-sm mx-auto mt-40">
                             <img src={urlQR} alt="bank" />
@@ -246,6 +292,19 @@ const PlanformPage = () => {
                 </ButtonRed>
             </div>
             <Footer></Footer>
+        </div>
+    ) : (
+        <div className="flex flex-col items-center justify-center min-h-screen gap-10 bg-black">
+            <p className="text-4xl font-medium">Vui lòng đăng nhập</p>
+            <ButtonRed
+                padding={"20px"}
+                width={"300px"}
+                height={"100px"}
+                textSize={"40px"}
+                onClick={() => {}}
+            >
+                <NavLink to="/sign-in">Sign in</NavLink>
+            </ButtonRed>
         </div>
     );
 };

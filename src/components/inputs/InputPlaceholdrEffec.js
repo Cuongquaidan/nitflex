@@ -63,12 +63,13 @@ const InputPlaceholdrEffec = ({
 
     return (
         <div
-            className="relative rounded-xl"
+            className="flex flex-col-reverse items-center justify-center mb-10 sm:mb-0 sm:relative rounded-xl sm:block"
             style={{
                 width,
                 padding: `${paddingNum}px`,
                 fontSize: `${textSizeNum}px`,
                 height: `${paddingNum * 2 + textSizeNum + 10}px`,
+                maxWidth: "100%",
             }}
         >
             <input
@@ -80,19 +81,20 @@ const InputPlaceholdrEffec = ({
                     padding: `${paddingNum}px`,
                     fontSize: `${textSizeNum}px`,
                     height: `${paddingNum * 2 + textSizeNum + 10}px`,
+                    maxWidth: "80vw",
                 }}
                 {...props}
                 id={placeHolder}
                 name={placeHolder}
                 className={
-                    "absolute top-0 left-0 border-[0.5px] pb-[0!important] h-[] rounded-xl  outline-white outline-1 " +
+                    "sm:absolute top-0 left-0 border-[0.5px] sm:pb-[0!important] h-[] rounded-xl  outline-white outline-1 " +
                     ` ${classNameSub}`
                 }
             />
             <label
                 ref={labelRef}
                 htmlFor={placeHolder}
-                className="absolute text-base text-left text-gray-400"
+                className="text-base text-left text-gray-400 sm:absolute"
                 style={{
                     top: paddingNum ? `${paddingNum}px` : 0,
                     left: paddingNum ? `${paddingNum}px` : 0,
@@ -106,7 +108,7 @@ const InputPlaceholdrEffec = ({
                 {placeHolder}
             </label>
             <p
-                className="absolute bottom-[-30px] left-[5px] text-base text-red-600 pl-2"
+                className="sm:absolute bottom-[-30px] left-[5px] text-base text-red-600 pl-2 hidden sm:block"
                 ref={errorRef}
             ></p>
         </div>
