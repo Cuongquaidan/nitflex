@@ -15,6 +15,7 @@ import {
     orderBy,
     query,
     setDoc,
+    where,
 } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config2";
 import { ToastContainer, toast } from "react-toastify";
@@ -36,12 +37,17 @@ const MovieDetailsPage = () => {
     const tapLocation = location.pathname.substring(
         location.pathname.indexOf("/tap") + 5
     );
+    const slugNameOfMovie = slug.substring(
+        slug.indexOf("phim/") + 5,
+        slug.length - 1
+    );
+    console.log("Slug name of movie:", slugNameOfMovie);
     const navigate = useNavigate();
     const data = useAxiosGetParams(`https://phimapi.com${slug}`, false);
     const [tap, setTap] = useState(parseInt(tapLocation) - 1);
     const phim = data?.episodes?.[0]?.server_data?.[tap]?.link_embed;
     const url = phim?.substring(phim?.indexOf("=") + 1, phim?.length);
-    console.log(url);
+    console.log("Video URL:", url);
 
     useEffect(() => {
         if (data) {
@@ -92,22 +98,29 @@ const MovieDetailsPage = () => {
             toast.error("Có lỗi xảy ra khi gửi đánh giá.");
         }
     };
+
     useEffect(() => {
+        console.log("Setting up Firestore query...");
         const q = query(
             collection(db, "reviewMovie"),
-            orderBy("AddAt", "desc"),
-            limit(10)
+            where("slug", "==", slugNameOfMovie)
         );
+
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const listReviewFromData = [];
             querySnapshot.forEach((doc) => {
+                console.log("Fetched review:", doc.data());
                 listReviewFromData.push({ id: doc.id, ...doc.data() });
             });
             setListReview(listReviewFromData);
+            console.log("Updated list of reviews:", listReviewFromData);
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [slugNameOfMovie]);
+
+    console.log("List of reviews:", listReview);
+
     const user = useContext(AuthContext);
     return user ? (
         <div className="min-h-screen bg-gray-900">
@@ -170,26 +183,30 @@ const MovieDetailsPage = () => {
                         ))}
                     </div>
                     <div className="min-h-[200px] bg-gray-800 border rounded-lg border-white mt-10 p-10 flex flex-col gap-10">
-                        {listReview.map((item, index) => (
-                            <div key={index}>
-                                <div className="flex gap-16 p-2 border-b border-gray-500">
-                                    <div className="flex flex-col items-center">
-                                        <img src={item.img} alt="" />
-                                        <p>{item.name}</p>
-                                    </div>
-                                    <div>
-                                        <Rate
-                                            value={item.rate}
-                                            defaultValue={item.rate}
-                                            disabled={true}
-                                            className="flex"
-                                            onHoverChange={() => {}}
-                                        ></Rate>
-                                        <p>{item.comment}</p>
+                        {listReview.length > 0 ? (
+                            listReview.map((item, index) => (
+                                <div key={index}>
+                                    <div className="flex gap-16 p-2 border-b border-gray-500">
+                                        <div className="flex flex-col items-center">
+                                            <img src={item.img} alt="" />
+                                            <p>{item.name}</p>
+                                        </div>
+                                        <div>
+                                            <Rate
+                                                value={item.rate}
+                                                defaultValue={item.rate}
+                                                disabled={true}
+                                                className="flex"
+                                                onHoverChange={() => {}}
+                                            ></Rate>
+                                            <p>{item.comment}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p className="text-white">Không có đánh giá nào</p>
+                        )}
                     </div>
                     <form
                         className="p-4 mt-10 text-xl bg-gray-800 border rounded-lg"
@@ -216,35 +233,31 @@ const MovieDetailsPage = () => {
                                 <textarea
                                     name="comment"
                                     id="comment"
-                                    className="w-full mt-4 min-h-[200px] p-4 bg-zinc-800"
-                                    onChange={(e) => setComment(e.target.value)}
+                                    className="w-full p-2 mt-2 text-white bg-gray-700 border border-gray-500 rounded-md"
+                                    rows="4"
                                     value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
                                 ></textarea>
                             </div>
                         </div>
                         <button
                             type="submit"
-                            className="block p-2 mt-4 ml-auto border border-white rounded-2xl w-[100px] bg-blue-900"
+                            className="p-3 mt-4 text-xl text-white bg-pink-700 rounded-md"
                         >
-                            Gửi
+                            Gửi đánh giá
                         </button>
                     </form>
                 </div>
             )}
-            <FooterInPageMovies />
         </div>
     ) : (
-        <div className="flex flex-col items-center justify-center min-h-screen gap-10 bg-black">
-            <p className="text-4xl font-medium">Vui lòng đăng nhập</p>
-            <ButtonRed
-                padding={"20px"}
-                width={"300px"}
-                height={"100px"}
-                textSize={"40px"}
-                onClick={() => {}}
-            >
-                <NavLink to="/sign-in">Sign in</NavLink>
-            </ButtonRed>
+        <div className="min-h-screen bg-gray-900">
+            <Navbar />
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-2xl text-white">
+                    Vui lòng đăng nhập để xem chi tiết phim và đánh giá.
+                </p>
+            </div>
         </div>
     );
 };
