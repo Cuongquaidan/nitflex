@@ -100,7 +100,7 @@ const MovieList = ({ heading, data, ...props }) => {
                 infinite={true}
                 keyBoardControl={true}
                 containerClass="carousel-container"
-                itemClass="carousel-item-padding-40-px "
+                itemClass=""
                 customLeftArrow={<CustomLeftArrow />}
                 customRightArrow={<CustomRightArrow />}
                 className="mt-5"

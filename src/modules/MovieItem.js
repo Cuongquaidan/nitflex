@@ -5,6 +5,7 @@ import axios from "axios";
 import { Tooltip } from "react-tooltip";
 import { NavLink } from "react-router-dom";
 import LocalStorageContext from "../contexts/LocalStorageContext";
+import {motion} from "framer-motion";
 const MovieItem = ({ item, ...props }) => {
     const {
         listLiked,
@@ -18,10 +19,6 @@ const MovieItem = ({ item, ...props }) => {
     const [isDisLiked, setIsDisLiked] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [data, setData] = useState(null);
-
-    const movieItemWrapperRef = useRef();
-    const movieItemRef = useRef();
-    const movieItemDetailsRef = useRef();
 
     useEffect(() => {
         setListLiked(JSON.parse(localStorage.getItem("listLiked")) || []);
@@ -112,70 +109,22 @@ const MovieItem = ({ item, ...props }) => {
         }
     };
 
-    useEffect(() => {
-        const infoItem = movieItemRef.current.getBoundingClientRect();
-        function handleMouseEnter() {
-            movieItemRef.current.style.display = "none";
-            movieItemDetailsRef.current.style.display = "flex";
-            const widthScreen = window.innerWidth;
-            const { left, right, width, height } =
-                movieItemDetailsRef?.current?.getBoundingClientRect();
-            movieItemDetailsRef.current.style.opacity = 1;
-            movieItemDetailsRef.current.style.visibility = "visible";
-            movieItemDetailsRef.current.style.top =
-                -(height - infoItem?.height) / 2 + "px";
-            if (left < 0) {
-                movieItemDetailsRef.current.style.left = "-30px";
-                movieItemDetailsRef.current.style.top =
-                    -(height - infoItem.height) / 2 + "px";
-            } else if (right > widthScreen) {
-                movieItemDetailsRef.current.style.right = "10px";
-                movieItemDetailsRef.current.style.top =
-                    -(height - infoItem?.height) / 2 + "px";
-            } else {
-                movieItemDetailsRef.current.style.left =
-                    -(width - infoItem.width) / 2 + "px";
-                movieItemDetailsRef.current.style.top =
-                    -(height - infoItem?.height) / 2 + "px";
-            }
-        }
-        function handleMouseLeave() {
-            movieItemRef.current.style.display = "block";
-            movieItemDetailsRef.current.style.display = "none";
-        }
-        movieItemWrapperRef.current.addEventListener(
-            "mouseenter",
-            handleMouseEnter
-        );
-        movieItemWrapperRef.current.addEventListener(
-            "mouseleave",
-            handleMouseLeave
-        );
-    }, []);
+ 
     return (
-        <div
-            className="bg-black md:w-[290px] mx-auto  flex-shrink-0 cursor-pointer movie-item transition-all"
+        <motion.div
+            className="mx-auto transition-all  w-[320px] rounded-lg cursor-pointer  movie-item"
             data-id={item._id}
+            whileHover={{
+                y:-50,
+                transition: { duration: 0.1 },
+                boxShadow: "0px 0px 10px 5px rgba(59, 59, 59, 0.5)",
+             }}
         >
-            <div
-                className="w-[290px] h-[160px] relative"
-                ref={movieItemWrapperRef}
-            >
-                <img
-                    src={
-                        item.thumb_url.includes("https://img.phimapi.com/")
-                            ? item.thumb_url
-                            : `https://img.phimapi.com/${item.thumb_url}`
-                    }
-                    alt="Chưa cập nhật"
-                    className="w-[290px] h-[160px] object-cover absolute top-0 left-0 z-10"
-                    style={{ display: "block" }}
-                    ref={movieItemRef}
-                />
+            
+               
                 <div
-                    className=" w-[400px] h-[400px] bg-black flex-col transition-all absolute z-50 opacity-0 invisible  "
-                    style={{ display: "none" }}
-                    ref={movieItemDetailsRef}
+                    className="rounded-lg w-[320px] h-[400px] bg-black flex-col transition-all  shadow-lg"
+                   
                 >
                     <img
                         src={
@@ -184,9 +133,9 @@ const MovieItem = ({ item, ...props }) => {
                                 : `https://img.phimapi.com/${item.thumb_url}`
                         }
                         alt="Chưa cập nhật"
-                        className="w-[400px] h-[200px] object-cover flex-shrink"
+                        className="w-full h-[200px] object-cover flex-shrink rounded-lg "
                     />
-                    <div className="flex items-center justify-between gap-2 p-4 bg-black">
+                    <div className="flex items-center justify-between gap-2 p-2 bg-black">
                         <div className="flex gap-3">
                             <div>
                                 <NavLink to={`/phim/${item?.slug}/tap-1`}>
@@ -374,25 +323,10 @@ const MovieItem = ({ item, ...props }) => {
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="w-10 h-10 p-3 border border-white rounded-full"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                />
-                            </svg>
-                        </div>
+                        
                     </div>
                     <div className="p-4">
-                        <h2>{item.name}</h2>
+                        <h2 className="truncate">{item.name}</h2>
                         <p>Trạng thái: {item.episode_current || "Chưa rõ"}</p>
                         <p>
                             Quantity:{" "}
@@ -401,8 +335,8 @@ const MovieItem = ({ item, ...props }) => {
                         <p>Năm sản xuất: {item.year || "Không rõ"}</p>
                     </div>
                 </div>
-            </div>
-        </div>
+          
+        </motion.div>
     );
 };
 

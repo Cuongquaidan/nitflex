@@ -98,7 +98,7 @@ const LayoutPage = () => {
             >
                 <div className="z-10 w-full min-h-[100%] bg-black bg-opacity-50 ">
                     <div
-                        className="absolute top-[30%] md:left-[100px] left-5 z-[1] text-white xl:text-[60px] md:text-[30px] text-[20px] font-bold max-w-[40%]"
+                        className="absolute top-[30%] md:left-[100px] left-5 z-[1] text-white backdrop-blur p-4 xl:text-[60px] md:text-[30px] text-[20px] font-bold max-w-[40%]"
                         style={{ textShadow: "0 0 5px black" }}
                     >
                         <h2>{phim ? phim.name : "Không có"}</h2>
@@ -151,7 +151,7 @@ const LayoutPage = () => {
                         </div>
                     </div>
                 </div>
-                {data?.trailer_url && (
+                {/* {data?.trailer_url && (
                     <div className="absolute left-0 z-0 mt-5 top-10 ">
                         <ReactPlayer
                             url={data.trailer_url}
@@ -166,7 +166,7 @@ const LayoutPage = () => {
                             muted={true}
                         />
                     </div>
-                )}
+                )} */}
             </header>
             <div className="relative">
                 <Outlet />
